@@ -280,6 +280,36 @@ describe Python::Pickle::Protocol0 do
     end
   end
 
+  describe "#read_float" do
+    let(:float) { 1234.5678 }
+    let(:io)  { StringIO.new("#{float}\n") }
+
+    it "must read until the newline and decode the read digits" do
+      expect(subject.read_float).to eq(float)
+    end
+
+    context "when a non-numeric character is read" do
+      let(:io) { StringIO.new("12.3x4\n") }
+
+      it do
+        expect {
+          subject.read_float
+        }.to raise_error(Python::Pickle::InvalidFormat,"encountered a non-numeric character while reading a float: \"x\"")
+      end
+    end
+
+    context "when the stream ends prematurely" do
+      let(:string) { '123.' }
+      let(:io)     { StringIO.new(string) }
+
+      it do
+        expect {
+          subject.read_float
+        }.to raise_error(Python::Pickle::InvalidFormat,"unexpected end of stream while parsing a float: #{string.inspect}")
+      end
+    end
+  end
+
   describe "#read_int" do
     let(:int) { 1234 }
     let(:io)  { StringIO.new("#{int}\n") }

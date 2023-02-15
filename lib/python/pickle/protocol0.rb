@@ -4,6 +4,7 @@ require 'python/pickle/instructions/dict'
 require 'python/pickle/instructions/string'
 require 'python/pickle/instructions/put'
 require 'python/pickle/instructions/get'
+require 'python/pickle/instructions/float'
 require 'python/pickle/instructions/int'
 require 'python/pickle/instructions/long'
 require 'python/pickle/instructions/set_item'
@@ -35,6 +36,7 @@ module Python
         46,  # STOP
         48,  # POP
         50,  # DUP
+        70,  # FLOAT
         73,  # INT
         76,  # LONG
         78,  # NONE
@@ -72,6 +74,8 @@ module Python
           Instructions::Put.new(read_int)
         when 103 # GET
           Instructions::Get.new(read_int)
+        when 70 # FLOAT
+          Instructions::Float.new(read_float)
         when 73 # INT
           Instructions::Int.new(read_int)
         when 76 # LONG
@@ -256,6 +260,32 @@ module Python
         end
 
         raise(InvalidFormat,"unexpected end of stream while parsing unicode string: #{new_string.inspect}")
+      end
+
+      #
+      # Reads a floating-point decimal from the pickle stream.
+      #
+      # @return [Float]
+      #   The decoded float.
+      #
+      # @raise [InvalidFormat]
+      #   Encountered a non-numeric character or a premature end of the stream.
+      #
+      def read_float
+        new_string = String.new
+
+        until @io.eof?
+          case (char = @io.getc)
+          when /[0-9\.]/
+            new_string << char
+          when "\n" # end-of-float
+            return new_string.to_f
+          else
+            raise(InvalidFormat,"encountered a non-numeric character while reading a float: #{char.inspect}")
+          end
+        end
+
+        raise(InvalidFormat,"unexpected end of stream while parsing a float: #{new_string.inspect}")
       end
 
       #
