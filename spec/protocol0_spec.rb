@@ -288,19 +288,40 @@ describe Python::Pickle::Protocol0 do
       expect(subject.read_int).to eq(int)
     end
 
-    context "when the next characters are '00'" do
-      let(:io) { StringIO.new('00') }
+    context "when the next characters are '00\\n'" do
+      let(:io) { StringIO.new("00\n") }
 
       it "must return false" do
         expect(subject.read_int).to be(false)
       end
     end
 
-    context "when the next characters are '01'" do
-      let(:io) { StringIO.new('01') }
+    context "when the next characters are '01\\n'" do
+      let(:io) { StringIO.new("01\n") }
 
       it "must return true" do
         expect(subject.read_int).to be(true)
+      end
+    end
+
+    context "when a non-numeric character is read" do
+      let(:io) { StringIO.new("100x00\n") }
+
+      it do
+        expect {
+          subject.read_int
+        }.to raise_error(Python::Pickle::InvalidFormat,"encountered a non-numeric character while reading an integer: \"x\"")
+      end
+    end
+
+    context "when the stream ends prematurely" do
+      let(:string) { '1234' }
+      let(:io)     { StringIO.new(string) }
+
+      it do
+        expect {
+          subject.read_int
+        }.to raise_error(Python::Pickle::InvalidFormat,"unexpected end of stream while parsing an integer: #{string.inspect}")
       end
     end
   end
@@ -319,7 +340,7 @@ describe Python::Pickle::Protocol0 do
       it do
         expect {
           subject.read_long
-        }.to raise_error(Python::Pickle::InvalidFormat,"encountered a non-numeric character within a long integer: \"x\"")
+        }.to raise_error(Python::Pickle::InvalidFormat,"encountered a non-numeric character while reading a long integer: \"x\"")
       end
     end
 

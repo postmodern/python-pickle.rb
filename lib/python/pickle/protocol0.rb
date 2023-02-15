@@ -267,13 +267,24 @@ module Python
       #   If the integer is `01`, then `true` will be returned.
       #
       def read_int
-        string = @io.gets(chomp: true)
+        new_string = String.new
 
-        case string
-        when '00' then false
-        when '01' then true
-        else           string.to_i
+        until @io.eof?
+          case (char = @io.getc)
+          when /[0-9]/
+            new_string << char
+          when "\n" # end-of-integer
+            return case new_string
+                   when '00' then false
+                   when '01' then true
+                   else           new_string.to_i
+                   end
+          else
+            raise(InvalidFormat,"encountered a non-numeric character while reading an integer: #{char.inspect}")
+          end
         end
+
+        raise(InvalidFormat,"unexpected end of stream while parsing an integer: #{new_string.inspect}")
       end
 
       #
@@ -295,7 +306,7 @@ module Python
           when 'L'
             return new_string.to_i
           else
-            raise(InvalidFormat,"encountered a non-numeric character within a long integer: #{char.inspect}")
+            raise(InvalidFormat,"encountered a non-numeric character while reading a long integer: #{char.inspect}")
           end
         end
 
