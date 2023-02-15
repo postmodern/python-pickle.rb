@@ -18,7 +18,8 @@ format.
 * Supports serializing Ruby objects into Python Pickle data.
 * Optionally supports only parsing Python Pickle data streams for debugging
   purposes.
-* Supports Pickle protocol versions 0, 1, 2, 3, 4, and 5.
+* Supports Pickle protocol 0, protocol 1, protocol 2, protocol 3, protocol 4,
+  and protocol 5.
   * Can parse both Python 2 and Python 3 Pickled data.
 
 ## Requirements

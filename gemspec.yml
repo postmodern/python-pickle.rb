@@ -2,8 +2,9 @@ name: python-pickle
 summary: A modern Ruby implementation of the Python Pickle serialization format.
 description: |
   python-pickle is a modern Ruby implementation of the Python Pickle
-  serialization format. It supports protocol versions 0, 1, 2, 3, 4, and 5,
-  allowing it to parse both Python 2 and Python 3 pickle data.
+  serialization format. It supports protocol 0, protocol 1, protocol 2,
+  protocol 3, protocol 4, and protocol 5, allowing it to parse both Python 2
+  and Python 3 pickle data.
 
 license: MIT
 authors: Postmodern
