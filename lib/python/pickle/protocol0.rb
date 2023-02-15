@@ -5,6 +5,7 @@ require 'python/pickle/instructions/string'
 require 'python/pickle/instructions/put'
 require 'python/pickle/instructions/get'
 require 'python/pickle/instructions/int'
+require 'python/pickle/instructions/long'
 require 'python/pickle/instructions/set_item'
 require 'python/pickle/instructions/tuple'
 require 'python/pickle/instructions/list'
@@ -35,6 +36,7 @@ module Python
         48,  # POP
         50,  # DUP
         73,  # INT
+        76,  # LONG
         78,  # NONE
         83,  # STRING
         86,  # UNICODE
@@ -72,6 +74,8 @@ module Python
           Instructions::Get.new(read_int)
         when 73 # INT
           Instructions::Int.new(read_int)
+        when 76
+          Instructions::Long.new(read_long)
         when 115 # SETITEM
           Instructions::SETITEM
         when 116 # TUPLE
@@ -270,6 +274,32 @@ module Python
         when '01' then true
         else           string.to_i
         end
+      end
+
+      #
+      # Reads a long integer.
+      #
+      # @return [Integer]
+      #   The decoded Integer.
+      #
+      # @raise [InvalidFormat]
+      #   Encountered a non-numeric character or a premature end of the stream.
+      #
+      def read_long
+        new_string = String.new
+
+        until @io.eof?
+          case (char = @io.getc)
+          when /[0-9]/
+            new_string << char
+          when 'L'
+            return new_string.to_i
+          else
+            raise(InvalidFormat,"encountered a non-numeric character within a long integer: #{char.inspect}")
+          end
+        end
+
+        raise(InvalidFormat,"unexpected end of stream while parsing a long integer: #{new_string.inspect}")
       end
 
     end

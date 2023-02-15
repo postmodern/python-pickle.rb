@@ -305,6 +305,36 @@ describe Python::Pickle::Protocol0 do
     end
   end
 
+  describe "#read_long" do
+    let(:long) { (2**64) - 1 }
+    let(:io)   { StringIO.new("#{long}L") }
+
+    it "must read until a 'L' character and decode the read digits" do
+      expect(subject.read_long).to eq(long)
+    end
+
+    context "when a non-numeric character is read" do
+      let(:io) { StringIO.new("1234x678L") }
+
+      it do
+        expect {
+          subject.read_long
+        }.to raise_error(Python::Pickle::InvalidFormat,"encountered a non-numeric character within a long integer: \"x\"")
+      end
+    end
+
+    context "when the stream ends prematurely" do
+      let(:string) { '1234' }
+      let(:io)     { StringIO.new(string) }
+
+      it do
+        expect {
+          subject.read_long
+        }.to raise_error(Python::Pickle::InvalidFormat,"unexpected end of stream while parsing a long integer: #{string.inspect}")
+      end
+    end
+  end
+
   let(:fixtures_dir) { File.join(__dir__,'fixtures') }
 
   describe "#read_instruction" do
@@ -379,6 +409,17 @@ describe Python::Pickle::Protocol0 do
       it "must return a Python::Pickle::Instructions::Int object" do
         expect(subject.read_instruction).to eq(
           Python::Pickle::Instructions::Int.new(int)
+        )
+      end
+    end
+
+    context "when the opcode is 76" do
+      let(:long) { (2**64)-1 }
+      let(:io)   { StringIO.new("#{76.chr}#{long}L") }
+
+      it "must return a Python::Pickle::Instructions::Long object" do
+        expect(subject.read_instruction).to eq(
+          Python::Pickle::Instructions::Long.new(long)
         )
       end
     end
