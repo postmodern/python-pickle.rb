@@ -65,7 +65,7 @@ module Python
         when 83 # STRING
           Instructions::String.new(read_string)
         when 86 # UNICODE
-          Instructions::String.new(read_unicode)
+          Instructions::String.new(read_unicode_string)
         when 112 # PUT
           Instructions::Put.new(read_int)
         when 103 # GET
@@ -106,9 +106,9 @@ module Python
         string = @io.read(2)
 
         unless string =~ /\A[0-9a-fA-F]{2}\z/
-          bad_char = "\\x#{string}"
+          bad_hex = string.inspect[1..-2]
 
-          raise(InvalidFormat,"invalid hex escape character: #{bad_char.inspect}")
+          raise(InvalidFormat,"invalid hex escape character: \"\\x#{bad_hex}\"")
         end
 
         return string.to_i(16).chr
@@ -129,9 +129,9 @@ module Python
         when '\\' then '\\'
         when "'"  then "'"
         else
-          escape_sequence = "\\#{letter}"
+          bad_escape = letter.inspect[1..-2]
 
-          raise(InvalidFormat,"unrecognized string escape sequence: #{escape_sequence.inspect}")
+          raise(InvalidFormat,"invalid backslash escape character: \"\\#{bad_escape}\"")
         end
       end
 
@@ -159,7 +159,11 @@ module Python
           end
         end
 
-        unless (newline = @io.getc) == "\n"
+        newline = @io.getc
+
+        if newline == nil
+          raise(InvalidFormat,"unexpected end of stream after the end of a single-quoted string")
+        elsif newline != "\n"
           raise(InvalidFormat,"expected a '\\n' character following the string, but was #{newline.inspect}")
         end
 
@@ -179,9 +183,9 @@ module Python
         string = @io.read(4)
 
         unless string =~ /\A[0-9a-fA-F]{4}\z/
-          bad_char = "\\u#{string}"
+          bad_unicode = string.inspect[1..-2]
 
-          raise(InvalidFormat,"invalid unicode escape character: #{bad_char.inspect}")
+          raise(InvalidFormat,"invalid unicode escape character: \"\\u#{bad_unicode}\"")
         end
 
         return string.to_i(16).chr(Encoding::UTF_8)
@@ -200,9 +204,9 @@ module Python
         string = @io.read(8)
 
         unless string =~ /\A[0-9a-fA-F]{8}\z/
-          bad_char = "\\U#{string}"
+          bad_unicode = string.inspect[1..-2]
 
-          raise(InvalidFormat,"invalid unicode escape character: #{bad_char.inspect}")
+          raise(InvalidFormat,"invalid unicode escape character: \"\\U#{bad_unicode}\"")
         end
 
         return string.to_i(16).chr(Encoding::UTF_8)
@@ -221,9 +225,9 @@ module Python
         when 'U'  then read_unicode_escaped_char32
         when "\\" then "\\"
         else
-          escape_sequence = "\\#{letter}"
+          bad_escape = letter.inspect[1..-2]
 
-          raise(InvalidFormat,"unrecognized string escape sequence: #{escape_sequence.inspect}")
+          raise(InvalidFormat,"invalid unicode escape character: \"\\#{bad_escape}\"")
         end
       end
 
@@ -233,7 +237,7 @@ module Python
       # @return [String]
       #   The decoded raw unicode String.
       #
-      def read_unicode
+      def read_unicode_string
         new_string = String.new(encoding: Encoding::UTF_8)
 
         until @io.eof?
@@ -247,7 +251,7 @@ module Python
           end
         end
 
-        raise(InvalidFormat,"unexpected end of stream while parsing string: #{new_string.inspect}")
+        raise(InvalidFormat,"unexpected end of stream while parsing unicode string: #{new_string.inspect}")
       end
 
       #
