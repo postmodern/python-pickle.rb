@@ -296,6 +296,9 @@ module Python
       #   If the integer is `00`, then `false` will be returned.
       #   If the integer is `01`, then `true` will be returned.
       #
+      # @raise [InvalidFormat]
+      #   Encountered a non-numeric character or a premature end of the stream.
+      #
       def read_int
         new_string = String.new
 
