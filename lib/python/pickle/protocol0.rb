@@ -74,7 +74,7 @@ module Python
           Instructions::Get.new(read_int)
         when 73 # INT
           Instructions::Int.new(read_int)
-        when 76
+        when 76 # LONG
           Instructions::Long.new(read_long)
         when 115 # SETITEM
           Instructions::SETITEM
