@@ -304,6 +304,14 @@ module Python
           when /[0-9]/
             new_string << char
           when 'L'
+            newline = @io.getc
+
+            if newline == nil
+              raise(InvalidFormat,"unexpected end of stream after the end of an integer")
+            elsif newline != "\n"
+              raise(InvalidFormat,"expected a '\\n' character following the integer, but was #{newline.inspect}")
+            end
+
             return new_string.to_i
           else
             raise(InvalidFormat,"encountered a non-numeric character while reading a long integer: #{char.inspect}")

@@ -328,14 +328,14 @@ describe Python::Pickle::Protocol0 do
 
   describe "#read_long" do
     let(:long) { (2**64) - 1 }
-    let(:io)   { StringIO.new("#{long}L") }
+    let(:io)   { StringIO.new("#{long}L\n") }
 
     it "must read until a 'L' character and decode the read digits" do
       expect(subject.read_long).to eq(long)
     end
 
     context "when a non-numeric character is read" do
-      let(:io) { StringIO.new("1234x678L") }
+      let(:io) { StringIO.new("1234x678L\n") }
 
       it do
         expect {
@@ -352,6 +352,28 @@ describe Python::Pickle::Protocol0 do
         expect {
           subject.read_long
         }.to raise_error(Python::Pickle::InvalidFormat,"unexpected end of stream while parsing a long integer: #{string.inspect}")
+      end
+    end
+
+    context "when the stream ends just after the terminating 'L'" do
+      let(:string) { '1234L' }
+      let(:io)     { StringIO.new(string) }
+
+      it do
+        expect {
+          subject.read_long
+        }.to raise_error(Python::Pickle::InvalidFormat,"unexpected end of stream after the end of an integer")
+      end
+    end
+
+    context "when there is no newline character after the terminating 'L'" do
+      let(:string) { "1234Lx" }
+      let(:io)     { StringIO.new(string) }
+
+      it do
+        expect {
+          subject.read_long
+        }.to raise_error(Python::Pickle::InvalidFormat,"expected a '\\n' character following the integer, but was \"x\"")
       end
     end
   end
@@ -436,7 +458,7 @@ describe Python::Pickle::Protocol0 do
 
     context "when the opcode is 76" do
       let(:long) { (2**64)-1 }
-      let(:io)   { StringIO.new("#{76.chr}#{long}L") }
+      let(:io)   { StringIO.new("#{76.chr}#{long}L\n") }
 
       it "must return a Python::Pickle::Instructions::Long object" do
         expect(subject.read_instruction).to eq(
