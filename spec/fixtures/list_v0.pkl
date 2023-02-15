@@ -1,0 +1,7 @@
+(lp0
+NaI01
+aI00
+aI42
+aS'ABC'
+p1
+a.

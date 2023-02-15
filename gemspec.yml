@@ -1,0 +1,24 @@
+name: python-pickle
+summary: A modern Ruby implementation of the Python Pickle serialization format.
+description: |
+  python-pickle is a modern Ruby implementation of the Python Pickle
+  serialization format. It supports protocol versions 0, 1, 2, 3, 4, and 5,
+  allowing it to parse both Python 2 and Python 3 pickle data.
+
+license: MIT
+authors: Postmodern
+email: postmodern.mod3@gmail.com
+homepage: https://github.com/postmodern/python-pickle.rb#readme
+has_yard: true
+
+metadata:
+  documentation_uri: https://rubydoc.info/gems/python-pickle
+  source_code_uri:   https://github.com/postmodern/python-pickle.rb
+  bug_tracker_uri:   https://github.com/postmodern/python-pickle.rb/issues
+  changelog_uri:     https://github.com/postmodern/python-pickle.rb/blob/master/ChangeLog.md
+  rubygems_mfa_required: 'true'
+
+required_ruby_version: ">= 3.0.0"
+
+development_dependencies:
+  bundler: ~> 2.0

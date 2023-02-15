@@ -1,0 +1,6 @@
+(dp0
+S'foo'
+p1
+S'bar'
+p2
+s.
