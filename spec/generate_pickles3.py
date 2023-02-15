@@ -13,7 +13,7 @@ objects = {
 		"true": True,
 		"false": False,
 		"int": 42,
-		"bigint": (2**64)-1,
+		"long": (2**64)-1,
 		"float": 3.141592653589793,
 		"str":  "ABC",
 		"unicode_str": u"ABC\u265E\u265F\U0001F600",
