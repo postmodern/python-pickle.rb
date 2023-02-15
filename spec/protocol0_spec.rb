@@ -109,6 +109,25 @@ describe Python::Pickle::Protocol0 do
     end
   end
 
+  describe "#read_nl_string" do
+    let(:string) { "foo" }
+    let(:io)     { StringIO.new("#{string}\n") }
+
+    it "must read the characters until a '\\n' character is encountered" do
+      expect(subject.read_nl_string).to eq(string)
+    end
+
+    context "when the stream prematurely ends" do
+      let(:io) { StringIO.new("#{string}") }
+
+      it do
+        expect {
+          subject.read_nl_string
+        }.to raise_error(Python::Pickle::InvalidFormat,"unexpected end of stream after the end of a newline terminated string")
+      end
+    end
+  end
+
   describe "#read_string" do
     let(:string) { 'ABC' }
     let(:io)     { StringIO.new("'#{string}'\n") }
@@ -543,6 +562,19 @@ describe Python::Pickle::Protocol0 do
       it "must return Python::Pickle::Instructions::APPEND" do
         expect(subject.read_instruction).to be(
           Python::Pickle::Instructions::APPEND
+        )
+      end
+    end
+
+    context "when the opcode is 99" do
+      let(:namespace) { "foo" }
+      let(:name)      { "bar" }
+
+      let(:io) { StringIO.new("#{99.chr}#{namespace}\n#{name}\n") }
+
+      it "must return Python::Pickle::Instructions::GLOBAL" do
+        expect(subject.read_instruction).to eq(
+          Python::Pickle::Instructions::Global.new(namespace,name)
         )
       end
     end

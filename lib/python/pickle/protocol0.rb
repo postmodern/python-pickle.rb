@@ -12,6 +12,7 @@ require 'python/pickle/instructions/tuple'
 require 'python/pickle/instructions/list'
 require 'python/pickle/instructions/none'
 require 'python/pickle/instructions/append'
+require 'python/pickle/instructions/global'
 require 'python/pickle/instructions/pop'
 require 'python/pickle/instructions/dup'
 require 'python/pickle/instructions/stop'
@@ -43,6 +44,7 @@ module Python
         83,  # STRING
         86,  # UNICODE
         97,  # APPEND
+        99,  # GLOBAL
         100, # DICT
         103, # GET
         108, # LIST
@@ -90,6 +92,8 @@ module Python
           Instructions::NONE
         when 97 # APPEND
           Instructions::APPEND
+        when 99 # GLOBAL
+          Instructions::Global.new(read_nl_string,read_nl_string)
         when 48 # POP
           Instructions::POP
         when 50 # DUP
@@ -141,6 +145,30 @@ module Python
 
           raise(InvalidFormat,"invalid backslash escape character: \"\\#{bad_escape}\"")
         end
+      end
+
+      #
+      # Reads a newline terminated string from the pickle string.
+      #
+      # @return [String]
+      #   The read string.
+      #
+      # @raise [InvalidFormat]
+      #   Encountered a premature end of the stream.
+      #
+      def read_nl_string
+        new_string = String.new
+
+        until @io.eof?
+          case (char = @io.getc)
+          when "\n"
+            return new_string
+          else
+            new_string << char
+          end
+        end
+
+        raise(InvalidFormat,"unexpected end of stream after the end of a newline terminated string")
       end
 
       #
