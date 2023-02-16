@@ -1,7 +1,9 @@
 require 'spec_helper'
 require 'python/pickle/protocol2'
 
+require 'protocol0_read_instruction_examples'
 require 'protocol1_read_instruction_examples'
+require 'protocol2_read_instruction_examples'
 
 describe Python::Pickle::Protocol2 do
   let(:pickle) { '' }
@@ -108,6 +110,7 @@ describe Python::Pickle::Protocol2 do
   end
 
   describe "#read_instruction" do
+    include_context "Protocol0#read_instruction examples"
     include_context "Protocol1#read_instruction examples"
     include_context "Protocol2#read_instruction examples"
 

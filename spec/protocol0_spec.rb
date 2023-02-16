@@ -1,6 +1,8 @@
 require 'spec_helper'
 require 'python/pickle/protocol0'
 
+require 'protocol0_read_instruction_examples'
+
 describe Python::Pickle::Protocol0 do
   let(:pickle) { '' }
   let(:io) { StringIO.new(pickle) }
@@ -447,16 +449,6 @@ describe Python::Pickle::Protocol0 do
       end
     end
 
-    context "when the opcode is 48" do
-      let(:io) { StringIO.new(48.chr) }
-
-      it "must return Python::Pickle::Instructions::POP" do
-        expect(subject.read_instruction).to be(
-          Python::Pickle::Instructions::POP
-        )
-      end
-    end
-
     context "when the opcode is 50" do
       let(:io) { StringIO.new(50.chr) }
 
@@ -636,6 +628,8 @@ describe Python::Pickle::Protocol0 do
         )
       end
     end
+
+    include_context "Protocol0#read_instruction examples"
 
     context "when the opcode isn't reocgnized" do
       let(:opcode) { 255 }

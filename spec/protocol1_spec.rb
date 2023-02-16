@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'python/pickle/protocol1'
 
+require 'protocol0_read_instruction_examples'
 require 'protocol1_read_instruction_examples'
 
 describe Python::Pickle::Protocol1 do
@@ -41,6 +42,7 @@ describe Python::Pickle::Protocol1 do
   let(:fixtures_dir) { File.join(__dir__,'fixtures') }
 
   describe "#read_instruction" do
+    include_context "Protocol0#read_instruction examples"
     include_context "Protocol1#read_instruction examples"
 
     context "when the opcode is not recognized" do
