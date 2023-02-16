@@ -450,6 +450,16 @@ describe Python::Pickle::Protocol0 do
       end
     end
 
+    context "when the opcode is 82" do
+      let(:io) { StringIO.new(82.chr) }
+
+      it "must return Python::Pickle::Instructions::REDUCE" do
+        expect(subject.read_instruction).to be(
+          Python::Pickle::Instructions::REDUCE
+        )
+      end
+    end
+
     context "when the opcode is 83" do
       let(:string) { 'ABC' }
       let(:io)     { StringIO.new("#{83.chr}'#{string}'\n") }
@@ -562,6 +572,16 @@ describe Python::Pickle::Protocol0 do
       it "must return Python::Pickle::Instructions::APPEND" do
         expect(subject.read_instruction).to be(
           Python::Pickle::Instructions::APPEND
+        )
+      end
+    end
+
+    context "when the opcode is 98" do
+      let(:io) { StringIO.new(98.chr) }
+
+      it "must return Python::Pickle::Instructions::BUILD" do
+        expect(subject.read_instruction).to be(
+          Python::Pickle::Instructions::BUILD
         )
       end
     end

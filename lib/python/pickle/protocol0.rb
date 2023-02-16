@@ -13,6 +13,8 @@ require 'python/pickle/instructions/list'
 require 'python/pickle/instructions/none'
 require 'python/pickle/instructions/append'
 require 'python/pickle/instructions/global'
+require 'python/pickle/instructions/reduce'
+require 'python/pickle/instructions/build'
 require 'python/pickle/instructions/pop'
 require 'python/pickle/instructions/dup'
 require 'python/pickle/instructions/stop'
@@ -41,9 +43,11 @@ module Python
         73,  # INT
         76,  # LONG
         78,  # NONE
+        82,  # REDUCE
         83,  # STRING
         86,  # UNICODE
         97,  # APPEND
+        98,  # BUILD
         99,  # GLOBAL
         100, # DICT
         103, # GET
@@ -68,6 +72,8 @@ module Python
           Instructions::MARK
         when 100 # DICT
           Instructions::DICT
+        when 82 # REDUCE
+          Instructions::REDUCE
         when 83 # STRING
           Instructions::String.new(read_string)
         when 86 # UNICODE
@@ -92,6 +98,8 @@ module Python
           Instructions::NONE
         when 97 # APPEND
           Instructions::APPEND
+        when 98 # BUILD
+          Instructions::BUILD
         when 99 # GLOBAL
           Instructions::Global.new(read_nl_string,read_nl_string)
         when 48 # POP
