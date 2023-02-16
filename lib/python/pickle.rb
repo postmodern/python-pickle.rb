@@ -128,29 +128,74 @@ module Python
     # @api private
     #
     def self.infer_protocol_version(io)
-      first_byte  = io.getbyte
-      second_byte = io.getbyte
+      opcode = io.getbyte
 
-      if first_byte == 0x80
-        second_byte # second byte after 0x80 is the protocol version number
-      else
-        if first_byte == 40 # skip the MARK opcode
-          if    Protocol1::OPCODES.include?(second_byte) then 1
-          elsif Protocol0::OPCODES.include?(second_byte) then 0
-          else
-            raise(InvalidFormat,"cannot infer version from second byte: #{second_byte}")
+      begin
+        case opcode
+        when 0x80 # PROTO (added in protocol 2)
+          version = io.getbyte
+          io.ungetbyte(version)
+          return version
+        when 48,  # POP (protocol 0)
+             50,  # DUP (protocol 0)
+             70,  # FLOAT (protocol 0)
+             83,  # STRING (protocol 0)
+             86,  # UNICODE (protocol 0)
+             100, # DICT (protocol 0)
+             103, # GET (protocol 0)
+             108, # LIST (protocol 0)
+             112  # PUT (protocol 0)
+          0
+        when 41,  # EMPTY_TUPLE (protocol 1)
+             71,  # BINFLOAT (protocol 1)
+             75,  # BININT1 (protocol 1)
+             84,  # BINSTRING (protocol 1)
+             85,  # SHORT_BINSTRING (protocol 1)
+             88,  # BINUNICODE (protocol 1)
+             93,  # EMPTY_LIST (protocol 1)
+             101, # APPENDS (protocol 1)
+             113, # BINPUT (protocol 1)
+             117, # SETITEMS (protocol 1)
+             125  # EMPTY_DICT (protocol 1)
+          1
+        when 46 # STOP
+          # if we've read all the way to the end of the stream and still cannot
+          # find any protocol 0 or protocol 1 specific opcodes, assume protocol 0
+          0
+        when 73, # INT  (identical in both protocol 0 and 1)
+             76  # LONG (identical in both protocol 0 and 1)
+          chars = io.gets
+
+          begin
+            infer_protocol_version(io)
+          ensure
+            chars.each_byte.reverse_each { |b| io.ungetbyte(b) }
+          end
+        when 40,  # MARK    (identical in both protocol 0 and 1)
+             78,  # NONE    (identical in both protocol 0 and 1)
+             82,  # REDUCE  (identical in both protocol 0 and 1)
+             97,  # APPEND  (identical in both protocol 0 and 1)
+             98,  # BUILD   (identical in both protocol 0 and 1)
+             115, # SETITEM (identical in both protocol 0 and 1)
+             116  # TUPLE   (identical in both protocol 0 and 1)
+          infer_protocol_version(io)
+        when 99 # GLOBAL
+          first_nl_string  = io.gets
+          second_nl_string = io.gets
+
+          begin
+            infer_protocol_version(io)
+          ensure
+            # push the read bytes back into the IO stream
+            second_nl_string.each_byte.reverse_each { |b| io.ungetbyte(b) }
+            first_nl_string.each_byte.reverse_each  { |b| io.ungetbyte(b) }
           end
         else
-          if    Protocol1::OPCODES.include?(first_byte) then 1
-          elsif Protocol0::OPCODES.include?(first_byte) then 0
-          else
-            raise(InvalidFormat,"cannot infer version from first byte: #{first_byte}")
-          end
+          raise(InvalidFormat,"cannot infer protocol version from opcode (#{opcode.inspect}) at position #{io.pos}")
         end
+      ensure
+        io.ungetbyte(opcode)
       end
-    ensure
-      io.ungetbyte(second_byte)
-      io.ungetbyte(first_byte)
     end
   end
 end
