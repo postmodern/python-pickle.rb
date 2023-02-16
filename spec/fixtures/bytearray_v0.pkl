@@ -1,0 +1,10 @@
+c__builtin__
+bytearray
+p0
+(VABC
+p1
+S'latin-1'
+p2
+tp3
+Rp4
+.

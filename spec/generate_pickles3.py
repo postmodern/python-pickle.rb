@@ -15,6 +15,7 @@ objects = {
 		"int": 42,
 		"long": (2**64)-1,
 		"float": 3.141592653589793,
+		"bytearray": bytearray([0x41, 0x42, 0x43]),
 		"str":  "ABC",
 		"unicode_str": u"ABC\u265E\u265F\U0001F600",
 		"ascii_str":  ascii("ABC"),
