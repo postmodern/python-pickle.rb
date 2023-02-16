@@ -14,6 +14,8 @@ require 'python/pickle/instructions/bin_unicode'
 require 'python/pickle/instructions/global'
 require 'python/pickle/instructions/empty_list'
 require 'python/pickle/instructions/append'
+require 'python/pickle/instructions/bin_get'
+require 'python/pickle/instructions/long_bin_get'
 require 'python/pickle/instructions/bin_put'
 require 'python/pickle/instructions/build'
 require 'python/pickle/instructions/appends'
@@ -130,6 +132,10 @@ module Python
           Instructions::EMPTY_LIST
         when 101 # APPENDS
           Instructions::APPENDS
+        when 104 # BINGET
+          Instructions::BinGet.new(read_uint8)
+        when 106 # LONG_BINGET
+          Instructions::LongBinGet.new(read_uint32_le)
         when 113 # BINPUT
           Instructions::BinPut.new(read_uint8)
         when 117 # SETITEMS

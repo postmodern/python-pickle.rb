@@ -100,6 +100,29 @@ shared_examples_for "Protocol1#read_instruction examples" do
     end
   end
 
+  context "when the opcode is 104" do
+    let(:index) { 2 }
+    let(:io)    { StringIO.new("#{104.chr}#{index.chr}".b) }
+
+    it "must return a Python::Pickle::Instructions::BinGet object" do
+      expect(subject.read_instruction).to eq(
+        Python::Pickle::Instructions::BinGet.new(index)
+      )
+    end
+  end
+
+  context "when the opcode is 106" do
+    let(:index)  { 2 }
+    let(:packed) { [index].pack('L<') }
+    let(:io)     { StringIO.new("#{106.chr}#{packed}".b) }
+
+    it "must return a Python::Pickle::Instructions::LongBinGet object" do
+      expect(subject.read_instruction).to eq(
+        Python::Pickle::Instructions::LongBinGet.new(index)
+      )
+    end
+  end
+
   context "when the opcode is 113" do
     let(:index) { 2 }
     let(:io)    { StringIO.new("#{113.chr}#{index.chr}") }

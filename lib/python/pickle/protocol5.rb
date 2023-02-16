@@ -98,6 +98,10 @@ module Python
           Instructions::EMPTY_LIST
         when 101 # APPENDS
           Instructions::APPENDS
+        when 104 # BINGET
+          Instructions::BinGet.new(read_uint8)
+        when 106 # LONG_BINGET
+          Instructions::LongBinGet.new(read_uint32_le)
         when 113 # BINPUT
           Instructions::BinPut.new(read_uint8)
         when 117 # SETITEMS

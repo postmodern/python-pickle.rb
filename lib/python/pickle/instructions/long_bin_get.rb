@@ -5,20 +5,20 @@ module Python
   module Pickle
     module Instructions
       #
-      # Represents the `GET` instruction.
+      # Represents the `LONG_BINGET` instruction.
       #
-      class Get < Instruction
+      class LongBinGet < Instruction
 
         include HasValue
 
         #
-        # Initializes the `GET` instruction.
+        # Initializes the `LONG_BINGET` instruction.
         #
         # @param [Integer] value
-        #   The `GET` instruction's value.
+        #   The `LONG_BINGET` instruction's value.
         #
         def initialize(value)
-          super(:GET,value)
+          super(:LONG_BINGET,value)
         end
 
       end
