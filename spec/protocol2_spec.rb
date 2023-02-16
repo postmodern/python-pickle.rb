@@ -216,8 +216,31 @@ describe Python::Pickle::Protocol2 do
       end
     end
 
-    describe "when the opcode is 138"
-    describe "when the opcode is 139"
+    describe "when the opcode is 138" do
+      let(:length) { 2 }
+      let(:uint)   { 0x1234 }
+      let(:packed) { [length, uint].pack('CS<') }
+      let(:io)     { StringIO.new("#{138.chr}#{packed}".b) }
+
+      it "must return Python::Pickle::Instructions::Long1" do
+        expect(subject.read_instruction).to eq(
+          Python::Pickle::Instructions::Long1.new(length,uint)
+        )
+      end
+    end
+
+    describe "when the opcode is 139" do
+      let(:length) { 4 }
+      let(:uint)   { 0x12345678 }
+      let(:packed) { [length, uint].pack('L<L<') }
+      let(:io)     { StringIO.new("#{139.chr}#{packed}".b) }
+
+      it "must return Python::Pickle::Instructions::Long4" do
+        expect(subject.read_instruction).to eq(
+          Python::Pickle::Instructions::Long4.new(length,uint)
+        )
+      end
+    end
 
     context "when the opcode is not recognized" do
       let(:opcode) { 255 }
