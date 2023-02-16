@@ -348,6 +348,76 @@ describe Python::Pickle do
           end
         end
       end
+
+      context "and it contains an object type" do
+        let(:file) { File.join(fixtures_dir,'object_v0.pkl') }
+
+        it "must return an Array of parsed instructions" do
+          expect(subject.parse(io)).to eq(
+            [
+              Python::Pickle::Instructions::Global.new('copy_reg','_reconstructor'),
+              Python::Pickle::Instructions::Put.new(0),
+              Python::Pickle::Instructions::MARK,
+              Python::Pickle::Instructions::Global.new('__main__','MyClass'),
+              Python::Pickle::Instructions::Put.new(1),
+              Python::Pickle::Instructions::Global.new('__builtin__','object'),
+              Python::Pickle::Instructions::Put.new(2),
+              Python::Pickle::Instructions::NONE,
+              Python::Pickle::Instructions::TUPLE,
+              Python::Pickle::Instructions::Put.new(3),
+              Python::Pickle::Instructions::REDUCE,
+              Python::Pickle::Instructions::Put.new(4),
+              Python::Pickle::Instructions::MARK,
+              Python::Pickle::Instructions::DICT,
+              Python::Pickle::Instructions::Put.new(5),
+              Python::Pickle::Instructions::String.new('y'),
+              Python::Pickle::Instructions::Put.new(6),
+              Python::Pickle::Instructions::Int.new(66),
+              Python::Pickle::Instructions::SETITEM,
+              Python::Pickle::Instructions::String.new('x'),
+              Python::Pickle::Instructions::Put.new(7),
+              Python::Pickle::Instructions::Int.new(65),
+              Python::Pickle::Instructions::SETITEM,
+              Python::Pickle::Instructions::BUILD,
+              Python::Pickle::Instructions::STOP
+            ]
+          )
+        end
+
+        context "and when a block is given" do
+          it "must yield each parsed instruction" do
+            expect {|b|
+              subject.parse(io,&b)
+            }.to yield_successive_args(
+              Python::Pickle::Instructions::Global.new('copy_reg','_reconstructor'),
+              Python::Pickle::Instructions::Put.new(0),
+              Python::Pickle::Instructions::MARK,
+              Python::Pickle::Instructions::Global.new('__main__','MyClass'),
+              Python::Pickle::Instructions::Put.new(1),
+              Python::Pickle::Instructions::Global.new('__builtin__','object'),
+              Python::Pickle::Instructions::Put.new(2),
+              Python::Pickle::Instructions::NONE,
+              Python::Pickle::Instructions::TUPLE,
+              Python::Pickle::Instructions::Put.new(3),
+              Python::Pickle::Instructions::REDUCE,
+              Python::Pickle::Instructions::Put.new(4),
+              Python::Pickle::Instructions::MARK,
+              Python::Pickle::Instructions::DICT,
+              Python::Pickle::Instructions::Put.new(5),
+              Python::Pickle::Instructions::String.new('y'),
+              Python::Pickle::Instructions::Put.new(6),
+              Python::Pickle::Instructions::Int.new(66),
+              Python::Pickle::Instructions::SETITEM,
+              Python::Pickle::Instructions::String.new('x'),
+              Python::Pickle::Instructions::Put.new(7),
+              Python::Pickle::Instructions::Int.new(65),
+              Python::Pickle::Instructions::SETITEM,
+              Python::Pickle::Instructions::BUILD,
+              Python::Pickle::Instructions::STOP
+            )
+          end
+        end
+      end
     end
   end
 
