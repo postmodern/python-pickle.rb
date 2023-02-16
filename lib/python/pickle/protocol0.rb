@@ -70,44 +70,44 @@ module Python
         case (opcode = @io.getbyte)
         when 40 # MARK
           Instructions::MARK
-        when 100 # DICT
-          Instructions::DICT
-        when 82 # REDUCE
-          Instructions::REDUCE
-        when 83 # STRING
-          Instructions::String.new(read_string)
-        when 86 # UNICODE
-          Instructions::String.new(read_unicode_string)
-        when 112 # PUT
-          Instructions::Put.new(read_int)
-        when 103 # GET
-          Instructions::Get.new(read_int)
+        when 46 # STOP
+          Instructions::STOP
+        when 48 # POP
+          Instructions::POP
+        when 50 # DUP
+          Instructions::DUP
         when 70 # FLOAT
           Instructions::Float.new(read_float)
         when 73 # INT
           Instructions::Int.new(read_int)
         when 76 # LONG
           Instructions::Long.new(read_long)
-        when 115 # SETITEM
-          Instructions::SETITEM
-        when 116 # TUPLE
-          Instructions::TUPLE
-        when 108 # LIST
-          Instructions::LIST
         when 78 # NONE
           Instructions::NONE
+        when 82 # REDUCE
+          Instructions::REDUCE
+        when 83 # STRING
+          Instructions::String.new(read_string)
+        when 86 # UNICODE
+          Instructions::String.new(read_unicode_string)
         when 97 # APPEND
           Instructions::APPEND
         when 98 # BUILD
           Instructions::BUILD
         when 99 # GLOBAL
           Instructions::Global.new(read_nl_string,read_nl_string)
-        when 48 # POP
-          Instructions::POP
-        when 50 # DUP
-          Instructions::DUP
-        when 46 # STOP
-          Instructions::STOP
+        when 100 # DICT
+          Instructions::DICT
+        when 103 # GET
+          Instructions::Get.new(read_int)
+        when 108 # LIST
+          Instructions::LIST
+        when 112 # PUT
+          Instructions::Put.new(read_int)
+        when 115 # SETITEM
+          Instructions::SETITEM
+        when 116 # TUPLE
+          Instructions::TUPLE
         else
           raise(InvalidFormat,"invalid opcode (#{opcode.inspect}) for protocol 0")
         end
