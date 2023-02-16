@@ -34,6 +34,15 @@ module Python
         139  # LONG4
       ]
 
+      #
+      # Reads an instruction from the pickle stream.
+      #
+      # @return [Instruction]
+      #   The decoded instruction.
+      #
+      # @raise [InvalidFormat]
+      #   The pickle stream could not be parsed.
+      #
       def read_instruction
         case (opcode = @io.getbyte)
         #
