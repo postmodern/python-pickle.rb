@@ -440,12 +440,64 @@ describe Python::Pickle::Protocol0 do
       end
     end
 
-    context "when the opcode is 100" do
-      let(:io) { StringIO.new(100.chr) }
+    context "when the opcode is 46" do
+      let(:io) { StringIO.new(46.chr) }
 
-      it "must return Python::Pickle::Instructions::DICT" do
+      it "must return Python::Pickle::Instructions::STOP" do
         expect(subject.read_instruction).to be(
-          Python::Pickle::Instructions::DICT
+          Python::Pickle::Instructions::STOP
+        )
+      end
+    end
+
+    context "when the opcode is 48" do
+      let(:io) { StringIO.new(48.chr) }
+
+      it "must return Python::Pickle::Instructions::POP" do
+        expect(subject.read_instruction).to be(
+          Python::Pickle::Instructions::POP
+        )
+      end
+    end
+
+    context "when the opcode is 50" do
+      let(:io) { StringIO.new(50.chr) }
+
+      it "must return Python::Pickle::Instructions::DUP" do
+        expect(subject.read_instruction).to be(
+          Python::Pickle::Instructions::DUP
+        )
+      end
+    end
+
+    context "when the opcode is 73" do
+      let(:int) { 1234 }
+      let(:io)  { StringIO.new("#{73.chr}#{int}\n") }
+
+      it "must return a Python::Pickle::Instructions::Int object" do
+        expect(subject.read_instruction).to eq(
+          Python::Pickle::Instructions::Int.new(int)
+        )
+      end
+    end
+
+    context "when the opcode is 76" do
+      let(:long) { (2**64)-1 }
+      let(:io)   { StringIO.new("#{76.chr}#{long}L\n") }
+
+      it "must return a Python::Pickle::Instructions::Long object" do
+        expect(subject.read_instruction).to eq(
+          Python::Pickle::Instructions::Long.new(long)
+        )
+      end
+    end
+
+    context "when the opcode is 78" do
+      let(:io) { StringIO.new(78.chr) }
+
+      it "must return Python::Pickle::Instructions::NONE" do
+        expect(subject.read_instruction).to be(
+          Python::Pickle::Instructions::NONE
         )
       end
     end
@@ -478,90 +530,6 @@ describe Python::Pickle::Protocol0 do
       it "must return a Python::Pickle::Instructions::String object" do
         expect(subject.read_instruction).to eq(
           Python::Pickle::Instructions::String.new(string)
-        )
-      end
-    end
-
-    context "when the opcode is 112" do
-      let(:index) { 1 }
-      let(:io)    { StringIO.new("#{112.chr}#{index}\n") }
-
-      it "must return a Python::Pickle::Instructions::Put object" do
-        expect(subject.read_instruction).to eq(
-          Python::Pickle::Instructions::Put.new(index)
-        )
-      end
-    end
-
-    context "when the opcode is 103" do
-      let(:index) { 1 }
-      let(:io)    { StringIO.new("#{103.chr}#{index}\n") }
-
-      it "must return a Python::Pickle::Instructions::Get object" do
-        expect(subject.read_instruction).to eq(
-          Python::Pickle::Instructions::Get.new(index)
-        )
-      end
-    end
-
-    context "when the opcode is 73" do
-      let(:int) { 1234 }
-      let(:io)  { StringIO.new("#{73.chr}#{int}\n") }
-
-      it "must return a Python::Pickle::Instructions::Int object" do
-        expect(subject.read_instruction).to eq(
-          Python::Pickle::Instructions::Int.new(int)
-        )
-      end
-    end
-
-    context "when the opcode is 76" do
-      let(:long) { (2**64)-1 }
-      let(:io)   { StringIO.new("#{76.chr}#{long}L\n") }
-
-      it "must return a Python::Pickle::Instructions::Long object" do
-        expect(subject.read_instruction).to eq(
-          Python::Pickle::Instructions::Long.new(long)
-        )
-      end
-    end
-
-    context "when the opcode is 115" do
-      let(:io) { StringIO.new(115.chr) }
-
-      it "must return Python::Pickle::Instructions::SETITEM" do
-        expect(subject.read_instruction).to be(
-          Python::Pickle::Instructions::SETITEM
-        )
-      end
-    end
-
-    context "when the opcode is 116" do
-      let(:io) { StringIO.new(116.chr) }
-
-      it "must return Python::Pickle::Instructions::TUPLE" do
-        expect(subject.read_instruction).to be(
-          Python::Pickle::Instructions::TUPLE
-        )
-      end
-    end
-
-    context "when the opcode is 108" do
-      let(:io) { StringIO.new(108.chr) }
-
-      it "must return Python::Pickle::Instructions::LIST" do
-        expect(subject.read_instruction).to be(
-          Python::Pickle::Instructions::LIST
-        )
-      end
-    end
-
-    context "when the opcode is 78" do
-      let(:io) { StringIO.new(78.chr) }
-
-      it "must return Python::Pickle::Instructions::NONE" do
-        expect(subject.read_instruction).to be(
-          Python::Pickle::Instructions::NONE
         )
       end
     end
@@ -599,32 +567,64 @@ describe Python::Pickle::Protocol0 do
       end
     end
 
-    context "when the opcode is 48" do
-      let(:io) { StringIO.new(48.chr) }
+    context "when the opcode is 100" do
+      let(:io) { StringIO.new(100.chr) }
 
-      it "must return Python::Pickle::Instructions::POP" do
+      it "must return Python::Pickle::Instructions::DICT" do
         expect(subject.read_instruction).to be(
-          Python::Pickle::Instructions::POP
+          Python::Pickle::Instructions::DICT
         )
       end
     end
 
-    context "when the opcode is 50" do
-      let(:io) { StringIO.new(50.chr) }
+    context "when the opcode is 103" do
+      let(:index) { 1 }
+      let(:io)    { StringIO.new("#{103.chr}#{index}\n") }
 
-      it "must return Python::Pickle::Instructions::DUP" do
-        expect(subject.read_instruction).to be(
-          Python::Pickle::Instructions::DUP
+      it "must return a Python::Pickle::Instructions::Get object" do
+        expect(subject.read_instruction).to eq(
+          Python::Pickle::Instructions::Get.new(index)
         )
       end
     end
 
-    context "when the opcode is 46" do
-      let(:io) { StringIO.new(46.chr) }
+    context "when the opcode is 108" do
+      let(:io) { StringIO.new(108.chr) }
 
-      it "must return Python::Pickle::Instructions::STOP" do
+      it "must return Python::Pickle::Instructions::LIST" do
         expect(subject.read_instruction).to be(
-          Python::Pickle::Instructions::STOP
+          Python::Pickle::Instructions::LIST
+        )
+      end
+    end
+
+    context "when the opcode is 112" do
+      let(:index) { 1 }
+      let(:io)    { StringIO.new("#{112.chr}#{index}\n") }
+
+      it "must return a Python::Pickle::Instructions::Put object" do
+        expect(subject.read_instruction).to eq(
+          Python::Pickle::Instructions::Put.new(index)
+        )
+      end
+    end
+
+    context "when the opcode is 115" do
+      let(:io) { StringIO.new(115.chr) }
+
+      it "must return Python::Pickle::Instructions::SETITEM" do
+        expect(subject.read_instruction).to be(
+          Python::Pickle::Instructions::SETITEM
+        )
+      end
+    end
+
+    context "when the opcode is 116" do
+      let(:io) { StringIO.new(116.chr) }
+
+      it "must return Python::Pickle::Instructions::TUPLE" do
+        expect(subject.read_instruction).to be(
+          Python::Pickle::Instructions::TUPLE
         )
       end
     end
