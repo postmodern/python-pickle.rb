@@ -34,27 +34,16 @@ module Python
       # Opcodes for Pickle protocol version 1.
       #
       # @see https://github.com/python/cpython/blob/main/Lib/pickletools.py
-      OPCODES = Set[
-        40,  # MARK
+      OPCODES = Protocol0::OPCODES + Set[
         41,  # EMPTY_TUPLE
-        46,  # STOP
         71,  # BINFLOAT
-        73,  # INT
         75,  # BININT1
-        76,  # LONG
-        78,  # NONE
-        82,  # REDUCE
         84,  # BINSTRING
         85,  # SHORT_BINSTRING
         88,  # BINUNICODE
         93,  # EMPTY_LIST
-        97,  # APPEND (was this deprecated?)
-        98,  # BUILD
-        99,  # GLOBAL
         101, # APPENDS
         113, # BINPUT
-        116, # TUPLE
-        115, # SETITEM
         117, # SETITEMS
         125  # EMPTY_DICT
       ]
@@ -70,24 +59,58 @@ module Python
       #
       def read_instruction
         case (opcode = @io.getbyte)
-        when 40  # MARK
+        #
+        # Protocol 0 instructions
+        #
+        when 40 # MARK
           Instructions::MARK
+        when 46 # STOP
+          Instructions::STOP
+        when 48 # POP
+          Instructions::POP
+        when 50 # DUP
+          Instructions::DUP
+        when 70 # FLOAT
+          Instructions::Float.new(read_float)
+        when 73 # INT
+          Instructions::Int.new(read_int)
+        when 76 # LONG
+          Instructions::Long.new(read_long)
+        when 78 # NONE
+          Instructions::NONE
+        when 82 # REDUCE
+          Instructions::REDUCE
+        when 83 # STRING
+          Instructions::String.new(read_string)
+        when 86 # UNICODE
+          Instructions::String.new(read_unicode_string)
+        when 97 # APPEND
+          Instructions::APPEND
+        when 98 # BUILD
+          Instructions::BUILD
+        when 99 # GLOBAL
+          Instructions::Global.new(read_nl_string,read_nl_string)
+        when 100 # DICT
+          Instructions::DICT
+        when 103 # GET
+          Instructions::Get.new(read_int)
+        when 108 # LIST
+          Instructions::LIST
+        when 112 # PUT
+          Instructions::Put.new(read_int)
+        when 115 # SETITEM
+          Instructions::SETITEM
+        when 116 # TUPLE
+          Instructions::TUPLE
+        #
+        # Protocol 1 instructions
+        #
         when 41  # EMPTY_TUPLE
           Instructions::EMPTY_TUPLE
-        when 46  # STOP
-          Instructions::STOP
         when 71  # BINFLOAT
           Instructions::BinFloat.new(read_float64_be)
-        when 73  # INT
-          Instructions::Int.new(read_int)
         when 75  # BININT1
           Instructions::BinInt1.new(read_uint8)
-        when 76  # LONG
-          Instructions::Long.new(read_long)
-        when 78  # NONE
-          Instructions::NONE
-        when 82  # REDUCE
-          Instructions::REDUCE
         when 84  # BINSTRING
           length = read_uint32_le
           string = @io.read(length)
@@ -105,20 +128,10 @@ module Python
           Instructions::BinUnicode.new(length,string)
         when 93  # EMPTY_LIST
           Instructions::EMPTY_LIST
-        when 97  # APPEND (was this deprecated?)
-          Instructions::APPEND
-        when 98  # BUILD
-          Instructions::BUILD
-        when 99  # GLOBAL
-          Instructions::Global.new(read_nl_string,read_nl_string)
         when 101 # APPENDS
           Instructions::APPENDS
         when 113 # BINPUT
           Instructions::BinPut.new(read_uint8)
-        when 116 # TUPLE
-          Instructions::TUPLE
-        when 115 # SETITEM
-          Instructions::SETITEM
         when 117 # SETITEMS
           Instructions::SETITEMS
         when 125 # EMPTY_DICT

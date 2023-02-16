@@ -24,17 +24,6 @@ shared_examples_for "Protocol1#read_instruction examples" do
     end
   end
 
-  context "when the opcode is 73" do
-    let(:int) { 1234 }
-    let(:io)  { StringIO.new("#{73.chr}#{int}\n") }
-
-    it "must return a Python::Pickle::Instructions::Int object" do
-      expect(subject.read_instruction).to eq(
-        Python::Pickle::Instructions::Int.new(int)
-      )
-    end
-  end
-
   context "when the opcode is 75" do
     let(:int) { 0xff }
     let(:io)  { StringIO.new("#{75.chr}#{int.chr}") }
@@ -42,17 +31,6 @@ shared_examples_for "Protocol1#read_instruction examples" do
     it "must return a Python::Pickle::Instructions::BinInt1 object" do
       expect(subject.read_instruction).to eq(
         Python::Pickle::Instructions::BinInt1.new(int)
-      )
-    end
-  end
-
-  context "when the opcode is 76" do
-    let(:long) { (2**64)-1 }
-    let(:io)   { StringIO.new("#{76.chr}#{long}L\n") }
-
-    it "must return a Python::Pickle::Instructions::Long object" do
-      expect(subject.read_instruction).to eq(
-        Python::Pickle::Instructions::Long.new(long)
       )
     end
   end
