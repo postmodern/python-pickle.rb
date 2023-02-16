@@ -470,6 +470,17 @@ describe Python::Pickle::Protocol0 do
       end
     end
 
+    context "when the opcode is 70" do
+      let(:float) { 1234.5678 }
+      let(:io)    { StringIO.new("#{70.chr}#{float}\n") }
+
+      it "must return a Python::Pickle::Instructions::Float object" do
+        expect(subject.read_instruction).to eq(
+          Python::Pickle::Instructions::Float.new(float)
+        )
+      end
+    end
+
     context "when the opcode is 73" do
       let(:int) { 1234 }
       let(:io)  { StringIO.new("#{73.chr}#{int}\n") }
