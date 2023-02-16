@@ -7,9 +7,6 @@ describe Python::Pickle::Protocol0 do
 
   subject { described_class.new(io) }
 
-  describe "#read_instruction" do
-  end
-
   describe "#read_hex_escaped_char" do
     let(:io) { StringIO.new("41") }
     subject { described_class.new(io) }
