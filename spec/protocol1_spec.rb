@@ -284,5 +284,16 @@ describe Python::Pickle::Protocol1 do
         )
       end
     end
+
+    context "when the opcode is not recognized" do
+      let(:opcode) { 255 }
+      let(:io)     { StringIO.new(opcode.chr) }
+
+      it do
+        expect {
+          subject.read_instruction
+        }.to raise_error(Python::Pickle::InvalidFormat,"invalid opcode (#{opcode.inspect}) for protocol 1")
+      end
+    end
   end
 end
