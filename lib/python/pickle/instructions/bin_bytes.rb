@@ -7,7 +7,7 @@ module Python
       #
       # Represents the `BINBYTES` instruction.
       #
-      # @note introduces in protocol 1.
+      # @note introduces in protocol 3.
       #
       class BinBytes < Instruction
 

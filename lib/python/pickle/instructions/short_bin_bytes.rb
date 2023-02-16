@@ -7,7 +7,7 @@ module Python
       #
       # Represents the `SHORT_BINBYTES` instruction.
       #
-      # @note introduces in protocol 1.
+      # @note introduces in protocol 3.
       #
       class ShortBinBytes < Instruction
 
