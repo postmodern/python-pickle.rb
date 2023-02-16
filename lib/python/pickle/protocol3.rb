@@ -33,6 +33,8 @@ module Python
           Instructions::STOP
         when 48 # POP
           Instructions::POP
+        when 49 # POP_MARK
+          Instructions::POP_MARK
         when 50 # DUP
           Instructions::DUP
         when 70 # FLOAT

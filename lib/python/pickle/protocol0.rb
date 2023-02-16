@@ -16,6 +16,7 @@ require 'python/pickle/instructions/global'
 require 'python/pickle/instructions/reduce'
 require 'python/pickle/instructions/build'
 require 'python/pickle/instructions/pop'
+require 'python/pickle/instructions/pop_mark'
 require 'python/pickle/instructions/dup'
 require 'python/pickle/instructions/stop'
 require 'python/pickle/exceptions'
@@ -38,6 +39,7 @@ module Python
         40,  # MARK
         46,  # STOP
         48,  # POP
+        49,  # POP_MARK
         50,  # DUP
         70,  # FLOAT
         73,  # INT
@@ -74,6 +76,8 @@ module Python
           Instructions::STOP
         when 48 # POP
           Instructions::POP
+        when 49 # POP_MARK
+          Instructions::POP_MARK
         when 50 # DUP
           Instructions::DUP
         when 70 # FLOAT

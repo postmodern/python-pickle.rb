@@ -21,6 +21,36 @@ shared_examples_for "Protocol0#read_instruction examples" do
     end
   end
 
+  context "when the opcode is 48" do
+    let(:io) { StringIO.new(48.chr) }
+
+    it "must return Python::Pickle::Instructions::POP" do
+      expect(subject.read_instruction).to be(
+        Python::Pickle::Instructions::POP
+      )
+    end
+  end
+
+  context "when the opcode is 49" do
+    let(:io) { StringIO.new(49.chr) }
+
+    it "must return Python::Pickle::Instructions::POP_MARK" do
+      expect(subject.read_instruction).to be(
+        Python::Pickle::Instructions::POP_MARK
+      )
+    end
+  end
+
+  context "when the opcode is 50" do
+    let(:io) { StringIO.new(50.chr) }
+
+    it "must return Python::Pickle::Instructions::DUP" do
+      expect(subject.read_instruction).to be(
+        Python::Pickle::Instructions::DUP
+      )
+    end
+  end
+
   context "when the opcode is 50" do
     let(:io) { StringIO.new(50.chr) }
 
