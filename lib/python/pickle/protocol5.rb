@@ -197,7 +197,7 @@ module Python
         #
         when 150 # BYTEARRAY8
           length = read_uint64_le
-          bytes  = @io.read(length).bytes
+          bytes  = @io.read(length)
 
           Instructions::ByteArray8.new(length,bytes)
         when 151 # NEXT_BUFFER

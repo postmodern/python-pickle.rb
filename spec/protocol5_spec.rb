@@ -22,13 +22,14 @@ describe Python::Pickle::Protocol5 do
 
     describe "when the opcode is 150" do
       let(:bytes)  { [0x41, 0x42, 0x43] }
+      let(:string) { bytes.map(&:chr).join }
       let(:length) { bytes.length }
       let(:packed) { [length, *bytes].pack('Q<C*') }
       let(:io)     { StringIO.new("#{150.chr}#{packed}".b) }
 
       it "must return a Python::Pickle::Instructions::ByteArray8" do
         expect(subject.read_instruction).to eq(
-          Python::Pickle::Instructions::ByteArray8.new(length,bytes)
+          Python::Pickle::Instructions::ByteArray8.new(length,string)
         )
       end
     end
