@@ -25,6 +25,7 @@ objects = {
 		"nested_list": [1, [2, [3, [4]]]],
 		"dict": {"foo": "bar"},
 		"nested_dict": {"a": {"b": {"c": "d"}}},
+		"class": MyClass,
 		"object": MyClass(0x41,0x42)
 }
 

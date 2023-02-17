@@ -1,0 +1,4 @@
+c__main__
+MyClass
+p0
+.
