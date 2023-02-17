@@ -1,0 +1,9 @@
+(lp0
+I1
+a(lp1
+I2
+a(lp2
+I3
+a(lp3
+I4
+aaaa.

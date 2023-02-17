@@ -1,0 +1,12 @@
+(dp0
+S'a'
+p1
+(dp2
+S'b'
+p3
+(dp4
+S'c'
+p5
+S'd'
+p6
+sss.
