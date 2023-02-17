@@ -3,6 +3,9 @@ import pickle
 
 protocols = [0, 1, 2]
 
+def func(x,y):
+	return x + y
+
 class MyClass(object):
 	def __init__(self,x,y):
 		self.x = x
@@ -25,6 +28,7 @@ objects = {
 		"nested_list": [1, [2, [3, [4]]]],
 		"dict": {"foo": "bar"},
 		"nested_dict": {"a": {"b": {"c": "d"}}},
+		"function": func,
 		"class": MyClass,
 		"object": MyClass(0x41,0x42)
 }
