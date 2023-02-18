@@ -142,9 +142,7 @@ module Python
     # @api public
     #
     def self.dump(object,output=nil, protocol: DEFAULT_PROTOCOL)
-      if (protocol < 0) || (protocol > HIGHEST_PROTOCOL)
-        raise(ArgumentError,"protocol must be between 0 or #{HIGHEST_PROTOCOL}, but was #{protocol.inspect}")
-      end
+      raise(NotImplementedError,"pickle serializing is currently not supported")
     end
 
     #

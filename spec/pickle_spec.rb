@@ -63,6 +63,13 @@ describe Python::Pickle do
   end
 
   describe ".dump" do
+    let(:object) { Object.new }
+
+    it do
+      expect {
+        subject.dump(object)
+      }.to raise_error(NotImplementedError,"pickle serializing is currently not supported")
+    end
   end
 
   describe ".infer_protocol_version" do
