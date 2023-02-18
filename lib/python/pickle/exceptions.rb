@@ -5,5 +5,8 @@ module Python
 
     class InvalidFormat < Error
     end
+
+    class DeserializationError < Error
+    end
   end
 end

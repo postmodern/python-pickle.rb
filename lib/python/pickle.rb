@@ -5,6 +5,7 @@ require 'python/pickle/protocol3'
 require 'python/pickle/protocol4'
 require 'python/pickle/protocol5'
 require 'python/pickle/exceptions'
+require 'python/pickle/deserializer'
 require 'stringio'
 
 module Python
@@ -89,7 +90,31 @@ module Python
     #
     # @api public
     #
-    def self.load(data, protocol: nil)
+    def self.load(data,**kwargs)
+      deserializer = Deserializer.new(**kwargs)
+
+      parse(data) do |instruction|
+        status, object = deserializer.execute(instruction)
+
+        if status == :halt
+          return object
+        end
+      end
+
+      raise(DeserializationError,"failed to deserialize any object data from stream")
+    end
+
+    #
+    # Deserializes a Python Pickle file.
+    #
+    # @param [String] path
+    #   The path of the file.
+    #
+    # @return [Object]
+    #   The deserialized object.
+    #
+    def self.load_file(path,**kwargs)
+      load(File.open(path,'rb'),**kwargs)
     end
 
     #
