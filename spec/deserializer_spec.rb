@@ -460,6 +460,19 @@ describe Python::Pickle::Deserializer do
         end
       end
 
+      context "and when the previous element on the stack is a Set" do
+        let(:instruction) { Python::Pickle::Instructions::APPEND }
+
+        before do
+          subject.stack << Set.new << 2
+          subject.execute(instruction)
+        end
+
+        it "must pop the last element from the #stack and push it onto the next list element" do
+          expect(subject.stack).to eq([ Set[2] ])
+        end
+      end
+
       context "but when the previous element on the stack is not an Array" do
         let(:instruction) { Python::Pickle::Instructions::APPEND }
         let(:item) { 2 }
@@ -489,6 +502,20 @@ describe Python::Pickle::Deserializer do
 
         it "must pop the #meta_stack, store the #stack, and concat the previous #stack onto the last element of the new #stack" do
           expect(subject.stack).to eq([ [1,2,3,4,5,6] ])
+        end
+      end
+
+      context "and when the previous element on the stack is a Set" do
+        let(:instruction) { Python::Pickle::Instructions::APPENDS }
+
+        before do
+          subject.meta_stack << [ Set[1,2,3] ]
+          subject.stack << 4 << 5 << 6
+          subject.execute(instruction)
+        end
+
+        it "must pop the #meta_stack, store the #stack, and concat the previous #stack onto the last element of the new #stack" do
+          expect(subject.stack).to eq([ Set[1,2,3,4,5,6] ])
         end
       end
 

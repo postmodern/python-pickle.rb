@@ -397,11 +397,11 @@ module Python
         item = @stack.pop
         list = @stack.last
 
-        unless list.kind_of?(Array)
+        unless (list.kind_of?(Array) || list.kind_of?(Set))
           raise(DeserializationError,"cannot append element #{item.inspect} onto a non-Array: #{list.inspect}")
         end
 
-        list.push(item)
+        list << item
       end
 
       #
@@ -411,11 +411,16 @@ module Python
         items = pop_meta_stack
         list  = @stack.last
 
-        unless list.kind_of?(Array)
+        case list
+        when Array
+          list.concat(items)
+        when Set
+          items.each do |item|
+            list << item
+          end
+        else
           raise(DeserializationError,"cannot append elements #{items.inspect} onto a non-Array: #{list.inspect}")
         end
-
-        list.concat(items)
       end
 
       #
