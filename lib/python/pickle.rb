@@ -134,7 +134,13 @@ module Python
     #   The deserialized object.
     #
     def self.load_file(path,**kwargs)
-      load(File.open(path,'rb'),**kwargs)
+      result = nil
+
+      File.open(path,'rb') do |file|
+        result = load(file,**kwargs)
+      end
+
+      return result
     end
 
     #
