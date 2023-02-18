@@ -15,7 +15,6 @@ format.
 ## Features
 
 * Supports deserializing Python Pickle data into Ruby objects.
-* Supports serializing Ruby objects into Python Pickle data.
 * Optionally supports only parsing Python Pickle data streams for debugging
   purposes.
 * Supports Pickle protocol 0, protocol 1, protocol 2, protocol 3, protocol 4,
@@ -24,6 +23,11 @@ format.
 * Supports deserializing Python `tuple` and `bytearray` objects.
 * Supports mapping Python functions to Ruby methods.
 * Supports mapping Python classes to Ruby classes.
+
+## TODO
+
+* Add support for writing Python Pickle data.
+* Add support for serializing Ruby objects to Python Pickle data.
 
 ## Requirements
 
