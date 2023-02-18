@@ -20,7 +20,8 @@ format.
 * Supports Pickle protocol 0, protocol 1, protocol 2, protocol 3, protocol 4,
   and protocol 5.
   * Can parse both Python 2 and Python 3 Pickled data.
-* Supports deserializing Python `tuple` and `bytearray` objects.
+* Supports deserializing Python `None`, `True`, `False`, `int`, `str`, `tuple`,
+  `list`, `bytearray`, and other objects.
 * Supports mapping Python extension codes to Ruby classes.
 * Supports mapping Python functions to Ruby methods.
 * Supports mapping Python classes to Ruby classes.
