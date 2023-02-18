@@ -547,6 +547,39 @@ describe Python::Pickle::Deserializer do
       end
     end
 
+    context "when given a Python::Pickle::Instructions::ADDITEMS" do
+      context "and when the previous element on the stack is a Set" do
+        let(:instruction) { Python::Pickle::Instructions::ADDITEMS }
+
+        before do
+          subject.meta_stack << [ Set[1,2,3] ]
+          subject.stack << 4 << 5 << 6
+          subject.execute(instruction)
+        end
+
+        it "must pop the #meta_stack, store the #stack, and concat the previous #stack onto the last element of the new #stack" do
+          expect(subject.stack).to eq([ Set[1,2,3,4,5,6] ])
+        end
+      end
+
+      context "but when the previous element on the stack is not a Set" do
+        let(:instruction) { Python::Pickle::Instructions::ADDITEMS }
+        let(:items) { [3,4,5] }
+        let(:set)   { [] }
+
+        before do
+          subject.meta_stack << [ set ]
+          subject.stack << items[0] << items[1] << items[2]
+        end
+
+        it do
+          expect {
+            subject.execute(instruction)
+          }.to raise_error(Python::Pickle::DeserializationError,"cannot add items #{items.inspect} to a non-Set object: #{set.inspect}")
+        end
+      end
+    end
+
     context "when given a Python::Pickle::Instructions::LIST" do
       let(:instruction) { Python::Pickle::Instructions::LIST }
 

@@ -47,6 +47,7 @@ require 'python/pickle/instructions/empty_set'
 require 'python/pickle/instructions/frozen_set'
 require 'python/pickle/instructions/append'
 require 'python/pickle/instructions/appends'
+require 'python/pickle/instructions/add_items'
 require 'python/pickle/instructions/list'
 require 'python/pickle/instructions/tuple1'
 require 'python/pickle/instructions/tuple2'
@@ -214,6 +215,7 @@ module Python
         when Instructions::FROZENSET    then execute_frozenset
         when Instructions::APPEND       then execute_append
         when Instructions::APPENDS      then execute_appends
+        when Instructions::ADDITEMS     then execute_additems
         when Instructions::LIST         then execute_list
         when Instructions::TUPLE1       then execute_tuple1
         when Instructions::TUPLE2       then execute_tuple2
@@ -422,6 +424,24 @@ module Python
           end
         else
           raise(DeserializationError,"cannot append elements #{items.inspect} onto a non-Array: #{list.inspect}")
+        end
+      end
+
+      #
+      # Executes a `ADDITEMS` instruction.
+      #
+      # @since 0.2.0
+      #
+      def execute_additems
+        items = pop_meta_stack
+        set   = @stack.last
+
+        unless set.kind_of?(Set)
+          raise(DeserializationError,"cannot add items #{items.inspect} to a non-Set object: #{set.inspect}")
+        end
+
+        items.each do |item|
+          set << item
         end
       end
 
