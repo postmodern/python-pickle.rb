@@ -28,7 +28,7 @@ module Python
     # The default protocol version to use.
     #
     # @api public
-    DEFAULT_PROTCOL = 4
+    DEFAULT_PROTOCOL = 4
 
     # The highest protocol version supported.
     #
