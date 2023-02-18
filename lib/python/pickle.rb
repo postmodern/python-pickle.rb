@@ -88,6 +88,16 @@ module Python
     #   The explicit protocol version to use. If `nil` the protocol version will
     #   be inferred by inspecting the first two bytes of the stream.
     #
+    # @param [Hash{Symbol => Object}] kwargs
+    #   Additional keyword arguments.
+    #
+    # @option kwargs [Hash{Integer => Object}] :extensions
+    #   A Hash of registered extension IDs and their Objects.
+    #
+    # @option kwargs [Hash{String => Hash{String => Class,Method}}] :constants
+    #   An optional mapping of custom Python constant names to Ruby classes
+    #   or methods.
+    #
     # @api public
     #
     def self.load(data, protocol: nil, **kwargs)
