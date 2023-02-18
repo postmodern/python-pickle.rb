@@ -120,6 +120,16 @@ module Python
     # @param [String] path
     #   The path of the file.
     #
+    # @param [Hash{Symbol => Object}] kwargs
+    #   Additional keyword arguments.
+    #
+    # @option kwargs [Hash{Integer => Object}] :extensions
+    #   A Hash of registered extension IDs and their Objects.
+    #
+    # @option kwargs [Hash{String => Hash{String => Class,Method}}] :constants
+    #   An optional mapping of custom Python constant names to Ruby classes
+    #   or methods.
+    #
     # @return [Object]
     #   The deserialized object.
     #
