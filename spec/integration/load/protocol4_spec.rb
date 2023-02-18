@@ -104,6 +104,16 @@ describe Python::Pickle do
         end
       end
 
+      context "and it contains a set type" do
+        let(:file) { File.join(fixtures_dir,'set_v4.pkl') }
+
+        it "must return a Set object" do
+          expect(subject.load(io)).to eq(
+            Set[1, 2, 3, 4]
+          )
+        end
+      end
+
       context "and it contains a dict type" do
         let(:file) { File.join(fixtures_dir,'dict_v4.pkl') }
 
