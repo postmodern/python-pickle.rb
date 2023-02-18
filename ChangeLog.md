@@ -1,5 +1,10 @@
 ### 0.1.0 / 2023-02-18
 
+* Changed {Python::Pickle.dump} to raise a `NotImplementedError` exception.
+* Fixed a typo in the method signature of {Python::Pickle.dump}.
+
+### 0.1.0 / 2023-02-18
+
 * Initial release:
   * Supports deserializing Python Pickle data into Ruby objects.
   * Supports serializing Ruby objects into Python Pickle data.
