@@ -384,6 +384,36 @@ describe Python::Pickle do
           end
         end
       end
+
+      context "and it contains a bytearray type" do
+        let(:file) { File.join(fixtures_dir,'bytearray_v5.pkl') }
+
+        it "must return an Array of parsed instructions" do
+          expect(subject.parse(io)).to eq(
+            [
+              Python::Pickle::Instructions::Proto.new(5),
+              Python::Pickle::Instructions::Frame.new(14),
+              Python::Pickle::Instructions::ByteArray8.new(3,'ABC'),
+              Python::Pickle::Instructions::MEMOIZE,
+              Python::Pickle::Instructions::STOP
+            ]
+          )
+        end
+
+        context "and when a block is given" do
+          it "must yield each parsed instruction" do
+            expect {|b|
+              subject.parse(io,&b)
+            }.to yield_successive_args(
+              Python::Pickle::Instructions::Proto.new(5),
+              Python::Pickle::Instructions::Frame.new(14),
+              Python::Pickle::Instructions::ByteArray8.new(3,'ABC'),
+              Python::Pickle::Instructions::MEMOIZE,
+              Python::Pickle::Instructions::STOP
+            )
+          end
+        end
+      end
     end
   end
 end

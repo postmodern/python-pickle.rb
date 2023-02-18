@@ -384,6 +384,56 @@ describe Python::Pickle do
           end
         end
       end
+
+      context "and it contains a bytearray type" do
+        let(:file) { File.join(fixtures_dir,'bytearray_v4.pkl') }
+
+        it "must return an Array of parsed instructions" do
+          expect(subject.parse(io)).to eq(
+            [
+              Python::Pickle::Instructions::Proto.new(4),
+              Python::Pickle::Instructions::Frame.new(36),
+              Python::Pickle::Instructions::ShortBinUnicode.new(8,'builtins'),
+              Python::Pickle::Instructions::MEMOIZE,
+              Python::Pickle::Instructions::ShortBinUnicode.new(9,'bytearray'),
+              Python::Pickle::Instructions::MEMOIZE,
+              Python::Pickle::Instructions::STACK_GLOBAL,
+              Python::Pickle::Instructions::MEMOIZE,
+              Python::Pickle::Instructions::ShortBinBytes.new(3,'ABC'),
+              Python::Pickle::Instructions::MEMOIZE,
+              Python::Pickle::Instructions::TUPLE1,
+              Python::Pickle::Instructions::MEMOIZE,
+              Python::Pickle::Instructions::REDUCE,
+              Python::Pickle::Instructions::MEMOIZE,
+              Python::Pickle::Instructions::STOP
+            ]
+          )
+        end
+
+        context "and when a block is given" do
+          it "must yield each parsed instruction" do
+            expect {|b|
+              subject.parse(io,&b)
+            }.to yield_successive_args(
+              Python::Pickle::Instructions::Proto.new(4),
+              Python::Pickle::Instructions::Frame.new(36),
+              Python::Pickle::Instructions::ShortBinUnicode.new(8,'builtins'),
+              Python::Pickle::Instructions::MEMOIZE,
+              Python::Pickle::Instructions::ShortBinUnicode.new(9,'bytearray'),
+              Python::Pickle::Instructions::MEMOIZE,
+              Python::Pickle::Instructions::STACK_GLOBAL,
+              Python::Pickle::Instructions::MEMOIZE,
+              Python::Pickle::Instructions::ShortBinBytes.new(3,'ABC'),
+              Python::Pickle::Instructions::MEMOIZE,
+              Python::Pickle::Instructions::TUPLE1,
+              Python::Pickle::Instructions::MEMOIZE,
+              Python::Pickle::Instructions::REDUCE,
+              Python::Pickle::Instructions::MEMOIZE,
+              Python::Pickle::Instructions::STOP
+            )
+          end
+        end
+      end
     end
   end
 end

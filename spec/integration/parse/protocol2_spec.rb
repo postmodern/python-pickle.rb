@@ -422,6 +422,50 @@ describe Python::Pickle do
           end
         end
       end
+
+      context "and it contains a bytearray type" do
+        let(:file) { File.join(fixtures_dir,'bytearray_v2.pkl') }
+
+        it "must return an Array of parsed instructions" do
+          expect(subject.parse(io)).to eq(
+            [
+              Python::Pickle::Instructions::Proto.new(2),
+              Python::Pickle::Instructions::Global.new('__builtin__','bytearray'),
+              Python::Pickle::Instructions::BinPut.new(0),
+              Python::Pickle::Instructions::BinUnicode.new(3,'ABC'),
+              Python::Pickle::Instructions::BinPut.new(1),
+              Python::Pickle::Instructions::ShortBinString.new(7,'latin-1'),
+              Python::Pickle::Instructions::BinPut.new(2),
+              Python::Pickle::Instructions::TUPLE2,
+              Python::Pickle::Instructions::BinPut.new(3),
+              Python::Pickle::Instructions::REDUCE,
+              Python::Pickle::Instructions::BinPut.new(4),
+              Python::Pickle::Instructions::STOP
+            ]
+          )
+        end
+
+        context "and when a block is given" do
+          it "must yield each parsed instruction" do
+            expect {|b|
+              subject.parse(io,&b)
+            }.to yield_successive_args(
+              Python::Pickle::Instructions::Proto.new(2),
+              Python::Pickle::Instructions::Global.new('__builtin__','bytearray'),
+              Python::Pickle::Instructions::BinPut.new(0),
+              Python::Pickle::Instructions::BinUnicode.new(3,'ABC'),
+              Python::Pickle::Instructions::BinPut.new(1),
+              Python::Pickle::Instructions::ShortBinString.new(7,'latin-1'),
+              Python::Pickle::Instructions::BinPut.new(2),
+              Python::Pickle::Instructions::TUPLE2,
+              Python::Pickle::Instructions::BinPut.new(3),
+              Python::Pickle::Instructions::REDUCE,
+              Python::Pickle::Instructions::BinPut.new(4),
+              Python::Pickle::Instructions::STOP
+            )
+          end
+        end
+      end
     end
   end
 end
