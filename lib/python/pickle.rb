@@ -139,6 +139,8 @@ module Python
     # @param [Integer] protocol
     #   The desired Python Pickle protocol to use.
     #
+    # @note serializing is currently not supported.
+    #
     # @api public
     #
     def self.dump(object,output=nil, protocol: DEFAULT_PROTOCOL)
