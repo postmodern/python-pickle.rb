@@ -52,6 +52,33 @@ describe Python::Pickle do
     it "must deserialize the Python Pickle data in the given file" do
       expect(subject.load(data)).to eq({"foo" => "bar"})
     end
+
+    context "when the constants: keyword argument is given" do
+      let(:path) { File.join(fixtures_dir,'object_v4.pkl') }
+
+      module TestLoad
+        class MyClass
+          attr_reader :x, :y
+
+          def __setstate__(attributes)
+            @x = attributes['x']
+            @y = attributes['y']
+          end
+        end
+      end
+
+      let(:constants) do
+        {
+          '__main__' => {
+            'MyClass' => TestLoad::MyClass
+          }
+        }
+      end
+
+      it "must map the Python classes to the Ruby classes" do
+        expect(subject.load(data, constants: constants)).to be_kind_of(TestLoad::MyClass)
+      end
+    end
   end
 
   describe ".load_file" do
@@ -59,6 +86,33 @@ describe Python::Pickle do
 
     it "must deserialize the Python Pickle data in the given file" do
       expect(subject.load_file(path)).to eq({"foo" => "bar"})
+    end
+
+    context "when the constants: keyword argument is given" do
+      let(:path) { File.join(fixtures_dir,'object_v4.pkl') }
+
+      module TestLoad
+        class MyClass
+          attr_reader :x, :y
+
+          def __setstate__(attributes)
+            @x = attributes['x']
+            @y = attributes['y']
+          end
+        end
+      end
+
+      let(:constants) do
+        {
+          '__main__' => {
+            'MyClass' => TestLoad::MyClass
+          }
+        }
+      end
+
+      it "must map the Python classes to the Ruby classes" do
+        expect(subject.load_file(path, constants: constants)).to be_kind_of(TestLoad::MyClass)
+      end
     end
   end
 
