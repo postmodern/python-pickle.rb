@@ -90,10 +90,10 @@ module Python
     #
     # @api public
     #
-    def self.load(data,**kwargs)
+    def self.load(data, protocol: nil, **kwargs)
       deserializer = Deserializer.new(**kwargs)
 
-      parse(data) do |instruction|
+      parse(data, protocol: protocol) do |instruction|
         status, object = deserializer.execute(instruction)
 
         if status == :halt
