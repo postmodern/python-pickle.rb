@@ -1,3 +1,10 @@
+### 0.2.0 / 2023-02-18
+
+* Added missing support for deserializing Python `set` objects.
+* Added missing support for deserializing the `EMPTY_SET`, `FROZENSET`, and
+  `ADDITEMS` Pickle instructions.
+* Map `__builtin__.set` and `builtins.set` to Ruby's `Set` class.
+
 ### 0.1.0 / 2023-02-18
 
 * Changed {Python::Pickle.dump} to raise a `NotImplementedError` exception.
