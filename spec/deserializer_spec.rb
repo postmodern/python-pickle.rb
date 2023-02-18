@@ -109,6 +109,24 @@ describe Python::Pickle::Deserializer do
         )
       end
     end
+
+    context "when initialized with the `buffers:` keyword argument" do
+      let(:buffer1) { "hello world" }
+      let(:buffer2) { "foo bar"     }
+      let(:buffers) do
+        [
+          buffer1,
+          buffer2
+        ]
+      end
+
+      subject { described_class.new(buffers: buffers) }
+
+      it "must set #buffers to an Enumerator of the buffers" do
+        expect(subject.buffers).to be_kind_of(Enumerator)
+        expect(subject.buffers.to_a).to eq(buffers)
+      end
+    end
   end
 
   describe "#push_meta_stack" do
@@ -1300,6 +1318,59 @@ describe Python::Pickle::Deserializer do
             subject.execute(instruction)
           }.to raise_error(Python::Pickle::DeserializationError,"cannot set key value pairs (#{pairs.inspect}) into non-Hash: #{object.inspect}")
         end
+      end
+    end
+
+    context "when given a Python::Pickle::Instructions::NEXT_BUFFER" do
+      let(:instruction) { Python::Pickle::Instructions::NEXT_BUFFER }
+
+      context "and the #{described_class} was initialized with the buffers: keyword argument" do
+        let(:buffer1) { String.new("hello world") }
+        let(:buffer2) { String.new("foo bar")     }
+        let(:buffers) do
+          [
+            buffer1,
+            buffer2
+          ]
+        end
+
+        subject { described_class.new(buffers: buffers) }
+
+        before do
+          subject.execute(instruction)
+        end
+
+        it "must take the next element from #buffers and push it onto the #stack" do
+          expect(subject.stack).to eq([buffer1])
+        end
+
+        it "must not modify the underlying buffers Array" do
+          expect(buffers).to eq([buffer1, buffer2])
+        end
+      end
+
+      context "but the #{described_class} was not initialized with the buffers: keyword argument" do
+        it do
+          expect {
+            subject.execute(instruction)
+          }.to raise_error(Python::Pickle::DeserializationError,"pickle stream includes a NEXT_BUFFER instruction, but no buffers were provided")
+        end
+      end
+    end
+
+    context "when given a Python::Pickle::Instructions::READONLY_BUFFER" do
+      let(:instruction) { Python::Pickle::Instructions::READONLY_BUFFER }
+
+      let(:buffer1) { String.new("hello world") }
+      let(:buffer2) { String.new("foo bar")     }
+
+      before do
+        subject.stack << buffer1 << buffer2
+        subject.execute(instruction)
+      end
+
+      it "must freeze the buffer at the top of the #stack" do
+        expect(subject.stack[-1]).to be_frozen
       end
     end
   end

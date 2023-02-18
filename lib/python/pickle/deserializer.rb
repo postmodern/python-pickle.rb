@@ -41,6 +41,11 @@ module Python
       # @return [Hash{Integer => Object}]
       attr_reader :extensions
 
+      # An enumerable list of out-of-band buffers.
+      #
+      # @return [Enumerator, nil]
+      attr_reader :buffers
+
       # The Python `object` class.
       OBJECT_CLASS = PyClass.new('__builtins__','object')
 
@@ -54,7 +59,10 @@ module Python
       #   An optional mapping of custom Python constant names to Ruby classes
       #   or methods.
       #
-      def initialize(constants: nil, extensions: nil)
+      # @param [Enumerable, nil] buffers
+      #   An enumerable list of out-of-band buffers.
+      #
+      def initialize(constants: nil, extensions: nil, buffers: nil)
         @meta_stack = []
         @stack = []
         @memo  = []
@@ -82,6 +90,8 @@ module Python
 
         @extensions = {}
         @extensions.merge!(extensions) if extensions
+
+        @buffers = buffers.each if buffers
       end
 
       #
@@ -148,29 +158,31 @@ module Python
              Instructions::ShortBinUnicode,
              Instructions::BinUnicode8
           @stack.push(instruction.value)
-        when Instructions::ByteArray8   then execute_byte_array8(instruction)
-        when Instructions::EMPTY_LIST   then execute_empty_list
-        when Instructions::EMPTY_TUPLE  then execute_empty_tuple
-        when Instructions::TUPLE        then execute_tuple
-        when Instructions::EMPTY_DICT   then execute_empty_dict
-        when Instructions::EMPTY_SET    then execute_empty_set
-        when Instructions::FROZENSET    then execute_frozenset
-        when Instructions::APPEND       then execute_append
-        when Instructions::APPENDS      then execute_appends
-        when Instructions::ADDITEMS     then execute_additems
-        when Instructions::LIST         then execute_list
-        when Instructions::TUPLE1       then execute_tuple1
-        when Instructions::TUPLE2       then execute_tuple2
-        when Instructions::TUPLE3       then execute_tuple3
-        when Instructions::DICT         then execute_dict
-        when Instructions::Global       then execute_global(instruction)
-        when Instructions::STACK_GLOBAL then execute_stack_global
-        when Instructions::NEWOBJ       then execute_newobj
-        when Instructions::NEWOBJ_EX    then execute_newobj_ex
-        when Instructions::REDUCE       then execute_reduce
-        when Instructions::BUILD        then execute_build
-        when Instructions::SETITEM      then execute_setitem
-        when Instructions::SETITEMS     then execute_setitems
+        when Instructions::ByteArray8      then execute_byte_array8(instruction)
+        when Instructions::EMPTY_LIST      then execute_empty_list
+        when Instructions::EMPTY_TUPLE     then execute_empty_tuple
+        when Instructions::TUPLE           then execute_tuple
+        when Instructions::EMPTY_DICT      then execute_empty_dict
+        when Instructions::EMPTY_SET       then execute_empty_set
+        when Instructions::FROZENSET       then execute_frozenset
+        when Instructions::APPEND          then execute_append
+        when Instructions::APPENDS         then execute_appends
+        when Instructions::ADDITEMS        then execute_additems
+        when Instructions::LIST            then execute_list
+        when Instructions::TUPLE1          then execute_tuple1
+        when Instructions::TUPLE2          then execute_tuple2
+        when Instructions::TUPLE3          then execute_tuple3
+        when Instructions::DICT            then execute_dict
+        when Instructions::Global          then execute_global(instruction)
+        when Instructions::STACK_GLOBAL    then execute_stack_global
+        when Instructions::NEWOBJ          then execute_newobj
+        when Instructions::NEWOBJ_EX       then execute_newobj_ex
+        when Instructions::REDUCE          then execute_reduce
+        when Instructions::BUILD           then execute_build
+        when Instructions::SETITEM         then execute_setitem
+        when Instructions::SETITEMS        then execute_setitems
+        when Instructions::NEXT_BUFFER     then execute_next_buffer
+        when Instructions::READONLY_BUFFER then execute_readonly_buffer
         when Instructions::STOP
           return :halt, @stack.pop
         else
@@ -586,6 +598,29 @@ module Python
           key, value = pairs.pop(2)
           dict[key] = value
         end
+      end
+
+      #
+      # Executes a `NEXT_BUFFER` instruction.
+      #
+      # @since 0.2.0
+      #
+      def execute_next_buffer
+        unless @buffers
+          raise(DeserializationError,"pickle stream includes a NEXT_BUFFER instruction, but no buffers were provided")
+        end
+
+        @stack.push(@buffers.next)
+      end
+
+      #
+      # Executes a `READONLY_BUFFER` instruction.
+      #
+      # @since 0.2.0
+      #
+      def execute_readonly_buffer
+        buffer = @stack.last
+        buffer.freeze
       end
 
     end

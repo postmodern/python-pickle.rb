@@ -98,6 +98,9 @@ module Python
     #   An optional mapping of custom Python constant names to Ruby classes
     #   or methods.
     #
+    # @option kwargs [Enumerable, nil] :buffers
+    #   An enumerable list of out-of-band buffers.
+    #
     # @api public
     #
     def self.load(data, protocol: nil, **kwargs)
@@ -129,6 +132,9 @@ module Python
     # @option kwargs [Hash{String => Hash{String => Class,Method}}] :constants
     #   An optional mapping of custom Python constant names to Ruby classes
     #   or methods.
+    #
+    # @option kwargs [Enumerable, nil] :buffers
+    #   An enumerable list of out-of-band buffers.
     #
     # @return [Object]
     #   The deserialized object.
