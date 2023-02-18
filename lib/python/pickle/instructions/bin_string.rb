@@ -17,7 +17,7 @@ module Python
         # Initializes the `BINSTRING` instruction.
         #
         # @param [Integer] length
-        #   The lenght of the `BINSTRING` value.
+        #   The length of the `BINSTRING` value.
         #
         # @param [String] value
         #   The `BINSTRING` instruction's value.

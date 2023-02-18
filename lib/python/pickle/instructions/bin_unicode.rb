@@ -17,7 +17,7 @@ module Python
         # Initializes the `BINUNICODE` instruction.
         #
         # @param [Integer] length
-        #   The lenght of the `BINUNICODE` value.
+        #   The length of the `BINUNICODE` value.
         #
         # @param [String] value
         #   The `BINUNICODE` instruction's value.

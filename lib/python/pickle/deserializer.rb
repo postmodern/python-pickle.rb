@@ -441,7 +441,7 @@ module Python
 
       #
       # Implements Python's `copyreg._reconstructor` function for Python Pickle
-      # protocol 0 compatability.
+      # protocol 0 compatibility.
       #
       # @param [PyClass, Class] class
       #   The Python or Ruby class to be initialized.

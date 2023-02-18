@@ -17,7 +17,7 @@ module Python
         # Initializes the `SHORT_BINUNICODE` instruction.
         #
         # @param [Integer] length
-        #   The lenght of the `SHORT_BINUNICODE` value.
+        #   The length of the `SHORT_BINUNICODE` value.
         #
         # @param [String] value
         #   The `SHORT_BINUNICODE` instruction's value.

@@ -167,7 +167,7 @@ module Python
       end
 
       #
-      # Reads an unisnged 16bit integer in little-endian byte-order.
+      # Reads an unsigned 16bit integer in little-endian byte-order.
       #
       # @return [Integer]
       #   The decoded integer.
@@ -180,7 +180,7 @@ module Python
       # Reads and unpacks a signed integer of arbitrary length.
       #
       # @param [Integer] length
-      #   The numbero of bytes to read.
+      #   The number of bytes to read.
       #
       # @return [Integer]
       #   The decoded long integer.

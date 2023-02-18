@@ -124,7 +124,7 @@ module Python
       #   The number of digits to read.
       #
       # @return [String]
-      #   The decoed raw character.
+      #   The decoded raw character.
       #
       def read_hex_escaped_char
         string = @io.read(2)
@@ -222,7 +222,7 @@ module Python
       # Reads a short unicode escaped character.
       #
       # @return [String]
-      #   The decoed UTF-8 character.
+      #   The decoded UTF-8 character.
       #
       # @raise [InvalidFormat]
       #   The unicode escaped character was invalid.
@@ -243,7 +243,7 @@ module Python
       # Reads a long unicode escaped character.
       #
       # @return [String]
-      #   The decoed UTF-8 character.
+      #   The decoded UTF-8 character.
       #
       # @raise [InvalidFormat]
       #   The unicode escaped character was invalid.

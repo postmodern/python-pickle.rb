@@ -42,7 +42,7 @@ module Python
     #   The Python pickle stream to parse.
     #
     # @param [Integer, nil] protocol
-    #   The explicit protocol version to use. If `nil` the protcol version will
+    #   The explicit protocol version to use. If `nil` the protocol version will
     #   be inferred by inspecting the first two bytes of the stream.
     #
     # @yield [instruction]
@@ -85,7 +85,7 @@ module Python
     #   The Python pickle stream to parse.
     #
     # @param [Integer, nil] protocol
-    #   The explicit protocol version to use. If `nil` the protcol version will
+    #   The explicit protocol version to use. If `nil` the protocol version will
     #   be inferred by inspecting the first two bytes of the stream.
     #
     # @api public
@@ -144,7 +144,7 @@ module Python
     #   The IO stream to inspect.
     #
     # @return [Integer]
-    #   The infered Python Pickle protocol version.
+    #   The inferred Python Pickle protocol version.
     #
     # @raise [InvalidFormat]
     #   Could not determine the Pickle version from the first two bytes of the

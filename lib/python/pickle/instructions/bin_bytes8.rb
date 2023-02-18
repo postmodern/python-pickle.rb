@@ -17,7 +17,7 @@ module Python
         # Initializes the `BINBYTES8` instruction.
         #
         # @param [Integer] length
-        #   The lenght of the `BINBYTES8` value.
+        #   The length of the `BINBYTES8` value.
         #
         # @param [String] value
         #   The `BINBYTES8` instruction's value.

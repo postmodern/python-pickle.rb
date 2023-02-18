@@ -17,7 +17,7 @@ module Python
         # Initializes the `SHORT_BINBYTES` instruction.
         #
         # @param [Integer] length
-        #   The lenght of the `SHORT_BINBYTES` value.
+        #   The length of the `SHORT_BINBYTES` value.
         #
         # @param [String] value
         #   The `SHORT_BINBYTES` instruction's value.

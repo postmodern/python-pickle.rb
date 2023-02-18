@@ -150,7 +150,7 @@ module Python
       end
 
       #
-      # Reads a double precesion (64bit) floating point number, in network
+      # Reads a double precision (64bit) floating point number, in network
       # byte-order (big-endian).
       #
       # @return [Float]

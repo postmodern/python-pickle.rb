@@ -17,7 +17,7 @@ module Python
         # Initializes the `BINBYTES` instruction.
         #
         # @param [Integer] length
-        #   The lenght of the `BINBYTES` value.
+        #   The length of the `BINBYTES` value.
         #
         # @param [String] value
         #   The `BINBYTES` instruction's value.
