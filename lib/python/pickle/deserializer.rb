@@ -124,12 +124,14 @@ module Python
 
           '__builtin__' => {
             'object'    => OBJECT_CLASS,
+            'set'       => Set,
             'bytearray' => ByteArray
           },
 
           # Python 3.x
           'builtins' => {
             'object'    => OBJECT_CLASS,
+            'set'       => Set,
             'bytearray' => ByteArray
           }
         }

@@ -31,12 +31,20 @@ describe Python::Pickle::Deserializer do
         expect(subject.constants['__builtin__']['object']).to be(described_class::OBJECT_CLASS)
       end
 
+      it "must contain '__builtin__.set' for Python 2.x support" do
+        expect(subject.constants['__builtin__']['set']).to be(Set)
+      end
+
       it "must contain '__builtin__.bytearray' for Python 2.x support" do
         expect(subject.constants['__builtin__']['bytearray']).to be(Python::Pickle::ByteArray)
       end
 
       it "must contain 'builtins.object' for Python 3.x support" do
         expect(subject.constants['builtins']['object']).to be(described_class::OBJECT_CLASS)
+      end
+
+      it "must contain 'builtins.set' for Python 2.x support" do
+        expect(subject.constants['builtins']['set']).to be(Set)
       end
 
       it "must contain 'builtins.bytearray' for Python 2.x support" do
@@ -84,11 +92,13 @@ describe Python::Pickle::Deserializer do
 
             '__builtin__' => {
               'object'    => described_class::OBJECT_CLASS,
+              'set'       => Set,
               'bytearray' => Python::Pickle::ByteArray
             },
 
             'builtins' => {
               'object'    => described_class::OBJECT_CLASS,
+              'set'       => Set,
               'bytearray' => Python::Pickle::ByteArray
             },
 
