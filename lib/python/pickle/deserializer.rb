@@ -43,6 +43,8 @@ require 'python/pickle/instructions/empty_list'
 require 'python/pickle/instructions/empty_tuple'
 require 'python/pickle/instructions/tuple'
 require 'python/pickle/instructions/empty_dict'
+require 'python/pickle/instructions/empty_set'
+require 'python/pickle/instructions/frozen_set'
 require 'python/pickle/instructions/append'
 require 'python/pickle/instructions/appends'
 require 'python/pickle/instructions/list'
@@ -59,6 +61,8 @@ require 'python/pickle/instructions/build'
 require 'python/pickle/instructions/set_item'
 require 'python/pickle/instructions/set_items'
 require 'python/pickle/instructions/stop'
+
+require 'set'
 
 module Python
   module Pickle
@@ -204,6 +208,8 @@ module Python
         when Instructions::EMPTY_TUPLE  then execute_empty_tuple
         when Instructions::TUPLE        then execute_tuple
         when Instructions::EMPTY_DICT   then execute_empty_dict
+        when Instructions::EMPTY_SET    then execute_empty_set
+        when Instructions::FROZENSET    then execute_frozenset
         when Instructions::APPEND       then execute_append
         when Instructions::APPENDS      then execute_appends
         when Instructions::LIST         then execute_list
@@ -359,6 +365,29 @@ module Python
       #
       def execute_empty_dict
         @stack.push({})
+      end
+
+      #
+      # Executes an `EMPTY_SET` instruction.
+      #
+      # @since 0.2.0
+      #
+      def execute_empty_set
+        @stack.push(Set.new)
+      end
+
+      #
+      # Executes a `FROZENSET` instruction.
+      #
+      # @since 0.2.0
+      #
+      def execute_frozenset
+        items = pop_meta_stack
+
+        set = Set.new(items)
+        set.freeze
+
+        @stack.push(set)
       end
 
       #

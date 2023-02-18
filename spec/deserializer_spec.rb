@@ -415,6 +415,37 @@ describe Python::Pickle::Deserializer do
       end
     end
 
+    context "when given a Python::Pickle::Instructions::EMPTY_SET" do
+      let(:instruction) { Python::Pickle::Instructions::EMPTY_SET }
+
+      before do
+        subject.execute(instruction)
+      end
+
+      it "must push an empty Set object onto the #stack" do
+        expect(subject.stack).to eq([ Set.new ])
+      end
+    end
+
+    context "when given a Python::Pickle::Instructions::FROZENSET" do
+      let(:instruction) { Python::Pickle::Instructions::FROZENSET }
+
+      before do
+        subject.meta_stack << []
+        subject.stack << 1 << 2 << 3
+        subject.execute(instruction)
+      end
+
+      it "must pop the #meta_stack and create a frozen Set from the previous #stack and push the frozen Set onto the new #stack" do
+        expect(subject.stack.length).to eq(1)
+
+        set = subject.stack[-1]
+
+        expect(set).to be_frozen
+        expect(set).to eq(Set[1,2,3])
+      end
+    end
+
     context "when given a Python::Pickle::Instructions::APPEND" do
       context "and when the previous element on the stack is an Array" do
         let(:instruction) { Python::Pickle::Instructions::APPEND }
