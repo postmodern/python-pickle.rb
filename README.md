@@ -21,6 +21,7 @@ format.
   and protocol 5.
   * Can parse both Python 2 and Python 3 Pickled data.
 * Supports deserializing Python `tuple` and `bytearray` objects.
+* Supports mapping Python extension codes to Ruby classes.
 * Supports mapping Python functions to Ruby methods.
 * Supports mapping Python classes to Ruby classes.
 
