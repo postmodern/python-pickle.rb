@@ -25,6 +25,7 @@ format.
 * Supports mapping Python extension codes to Ruby classes.
 * Supports mapping Python functions to Ruby methods.
 * Supports mapping Python classes to Ruby classes.
+* Supports out-of-band buffers.
 
 ## TODO
 

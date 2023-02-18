@@ -1,8 +1,11 @@
 ### 0.2.0 / 2023-02-18
 
 * Added missing support for deserializing Python `set` objects.
+* Added missing support for out-of-band buffers.
 * Added missing support for deserializing the `EMPTY_SET`, `FROZENSET`, and
   `ADDITEMS` Pickle instructions.
+* Added missing support for deserializing the `NEXT_BUFFER` and
+  `READONLY_BUFFER` Pickle instructions.
 * Map `__builtin__.set` and `builtins.set` to Ruby's `Set` class.
 
 ### 0.1.0 / 2023-02-18
