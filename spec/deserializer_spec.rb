@@ -2,6 +2,11 @@ require 'spec_helper'
 require 'python/pickle/deserializer'
 
 describe Python::Pickle::Deserializer do
+  module TestDeserializer
+    class MyClass
+    end
+  end
+
   describe "#initialize" do
     it "must initialize #meta_stack to an empty Array" do
       expect(subject.meta_stack).to eq([])
@@ -44,9 +49,55 @@ describe Python::Pickle::Deserializer do
     end
 
     context "when initialized with the `extensions:` keyword argument" do
+      let(:extensions) do
+        {
+          0x41 => Object.new,
+          0x42 => Object.new,
+          0x43 => Object.new
+        }
+      end
+
+      subject { described_class.new(extensions: extensions) }
+
+      it "must add the extensions: values to #extensions" do
+        expect(subject.extensions).to eq(extensions)
+      end
     end
 
     context "when initialized with the `constants:` keyword argument" do
+      let(:constants) do
+        {
+          '__main__' => {
+            'MyClass' => TestDeserializer::MyClass
+          }
+        }
+      end
+
+      subject { described_class.new(constants: constants) }
+
+      it "must merge the constants: keyword argument with the default constants" do
+        expect(subject.constants).to eq(
+          {
+            'copy_reg' => {
+              '_reconstructor' => subject.method(:copyreg_reconstructor)
+            },
+
+            '__builtin__' => {
+              'object'    => described_class::OBJECT_CLASS,
+              'bytearray' => Python::Pickle::ByteArray
+            },
+
+            'builtins' => {
+              'object'    => described_class::OBJECT_CLASS,
+              'bytearray' => Python::Pickle::ByteArray
+            },
+
+            '__main__' => {
+              'MyClass' => TestDeserializer::MyClass
+            }
+          }
+        )
+      end
     end
   end
 
