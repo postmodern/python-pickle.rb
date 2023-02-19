@@ -176,6 +176,7 @@ module Python
         when Instructions::Global          then execute_global(instruction)
         when Instructions::STACK_GLOBAL    then execute_stack_global
         when Instructions::Inst            then execute_inst(instruction)
+        when Instructions::OBJ             then execute_obj
         when Instructions::NEWOBJ          then execute_newobj
         when Instructions::NEWOBJ_EX       then execute_newobj_ex
         when Instructions::REDUCE          then execute_reduce
@@ -521,6 +522,18 @@ module Python
         name      = instruction.name
         py_class  = resolve_constant(namespace,name)
         args      = pop_meta_stack
+        py_object = py_class.new(*args)
+
+        @stack.push(py_object)
+      end
+
+      #
+      # Executes an `OBJ` instruction.
+      #
+      # @since 0.2.0
+      #
+      def execute_obj
+        py_class, *args = pop_meta_stack
         py_object = py_class.new(*args)
 
         @stack.push(py_object)

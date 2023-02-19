@@ -805,6 +805,85 @@ describe Python::Pickle::Deserializer do
       end
     end
 
+    context "when given a Python::Pickle::Instructions::OBJ" do
+      let(:instruction) { Python::Pickle::Instructions::OBJ }
+
+      context "and when the constant on the #stack is a Ruby class" do
+        module TestObjInstruction
+          class MyClass
+          end
+        end
+
+        context "but there are no additional arguments on the #stack after the class" do
+          before do
+            subject.stack << TestObjInstruction::MyClass
+            subject.execute(instruction)
+          end
+
+          it "must pop off first element, and initialize a new instance of the class, and push the new instance onto the #stack" do
+            expect(subject.stack.length).to eq(1)
+            expect(subject.stack[-1]).to be_kind_of(TestObjInstruction::MyClass)
+          end
+        end
+
+        context "but there are additional arguments on the #stack after the class" do
+          module TestObjInstruction
+            class MyClassWithArgs
+              attr_reader :x, :y
+
+              def initialize(x,y)
+                @x = x
+                @y = y
+              end
+            end
+          end
+
+          before do
+            subject.stack << TestObjInstruction::MyClassWithArgs << 1 << 2
+            subject.execute(instruction)
+          end
+
+          it "must call #initialize with the splatted tuple's arguments" do
+            object = subject.stack[-1]
+
+            expect(object.x).to eq(1)
+            expect(object.y).to eq(2)
+          end
+        end
+      end
+
+      context "and when the constant on the #stack is a PyClass" do
+        let(:namespace) { '__main__' }
+        let(:name)      { 'MyClass'  }
+        let(:py_class)  { Python::Pickle::PyClass.new(namespace,name) }
+
+        context "but there are no additional arguments on the #stack after the class" do
+          before do
+            subject.stack << py_class
+            subject.execute(instruction)
+          end
+
+          it "must pop off the two last elements and push the new Python::Pickle::PyObject onto the #stack" do
+            expect(subject.stack.length).to eq(1)
+            expect(subject.stack[-1]).to be_kind_of(Python::Pickle::PyObject)
+          end
+        end
+
+        context "but there are additional arguments on the #stack after the class" do
+          before do
+            subject.stack << py_class << 1 << 2
+            subject.execute(instruction)
+          end
+
+          it "must set the object's #init_args to the tuple's elements" do
+            object = subject.stack[-1]
+
+            expect(object.init_args).to eq([1,2])
+          end
+        end
+      end
+    end
+
     context "when given a Python::Pickle::Instructions::NEWOBJ" do
       let(:instruction) { Python::Pickle::Instructions::NEWOBJ }
 
