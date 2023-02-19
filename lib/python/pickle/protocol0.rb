@@ -190,48 +190,27 @@ module Python
       #
       def read_instruction
         case (opcode = @io.getbyte)
-        when MARK
-          Instructions::MARK
-        when STOP
-          Instructions::STOP
-        when POP
-          Instructions::POP
-        when POP_MARK
-          Instructions::POP_MARK
-        when DUP
-          Instructions::DUP
-        when FLOAT
-          Instructions::Float.new(read_float)
-        when INT
-          Instructions::Int.new(read_int)
-        when LONG
-          Instructions::Long.new(read_long)
-        when NONE
-          Instructions::NONE
-        when REDUCE
-          Instructions::REDUCE
-        when STRING
-          Instructions::String.new(read_string)
-        when UNICODE
-          Instructions::String.new(read_unicode_string)
-        when APPEND
-          Instructions::APPEND
-        when BUILD
-          Instructions::BUILD
-        when GLOBAL
-          Instructions::Global.new(read_nl_string,read_nl_string)
-        when DICT
-          Instructions::DICT
-        when GET
-          Instructions::Get.new(read_int)
-        when LIST
-          Instructions::LIST
-        when PUT
-          Instructions::Put.new(read_int)
-        when SETITEM
-          Instructions::SETITEM
-        when TUPLE
-          Instructions::TUPLE
+        when MARK     then Instructions::MARK
+        when STOP     then Instructions::STOP
+        when POP      then Instructions::POP
+        when POP_MARK then Instructions::POP_MARK
+        when DUP      then Instructions::DUP
+        when FLOAT    then read_float_instruction
+        when INT      then read_int_instruction
+        when LONG     then read_long_instruction
+        when NONE     then Instructions::NONE
+        when REDUCE   then Instructions::REDUCE
+        when STRING   then read_string_instruction
+        when UNICODE  then read_unicode_instruction
+        when APPEND   then Instructions::APPEND
+        when BUILD    then Instructions::BUILD
+        when GLOBAL   then read_global_instruction
+        when DICT     then Instructions::DICT
+        when GET      then read_get_instruction
+        when LIST     then Instructions::LIST
+        when PUT      then read_put_instruction
+        when SETITEM  then Instructions::SETITEM
+        when TUPLE    then Instructions::TUPLE
         else
           raise(InvalidFormat,"invalid opcode (#{opcode.inspect}) for protocol 0")
         end
@@ -512,6 +491,94 @@ module Python
         end
 
         raise(InvalidFormat,"unexpected end of stream while parsing a long integer: #{new_string.inspect}")
+      end
+
+      #
+      # Reads a `FLOAT` instruction.
+      #
+      # @return [Instructions::Float]
+      #
+      # @since 0.2.0
+      #
+      def read_float_instruction
+        Instructions::Float.new(read_float)
+      end
+
+      #
+      # Reads a `INT` instruction.
+      #
+      # @return [Instructions::Int]
+      #
+      # @since 0.2.0
+      #
+      def read_int_instruction
+        Instructions::Int.new(read_int)
+      end
+
+      #
+      # Reads a `LONG` instruction.
+      #
+      # @return [Instructions::Long]
+      #
+      # @since 0.2.0
+      #
+      def read_long_instruction
+        Instructions::Long.new(read_long)
+      end
+
+      #
+      # Reads a `STRING` instruction.
+      #
+      # @return [Instructions::String]
+      #
+      # @since 0.2.0
+      #
+      def read_string_instruction
+        Instructions::String.new(read_string)
+      end
+
+      #
+      # Reads a `UNICODE` instruction.
+      #
+      # @return [Instructions::Unicode]
+      #
+      # @since 0.2.0
+      #
+      def read_unicode_instruction
+        Instructions::String.new(read_unicode_string)
+      end
+
+      #
+      # Reads a `GLOBAL` instruction.
+      #
+      # @return [Instructions::Global]
+      #
+      # @since 0.2.0
+      #
+      def read_global_instruction
+        Instructions::Global.new(read_nl_string,read_nl_string)
+      end
+
+      #
+      # Reads a `GET` instruction.
+      #
+      # @return [Instructions::Get]
+      #
+      # @since 0.2.0
+      #
+      def read_get_instruction
+        Instructions::Get.new(read_int)
+      end
+
+      #
+      # Reads a `PUT` instruction.
+      #
+      # @return [Instructions::Put]
+      #
+      # @since 0.2.0
+      #
+      def read_put_instruction
+        Instructions::Put.new(read_int)
       end
 
     end

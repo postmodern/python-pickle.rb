@@ -138,86 +138,43 @@ module Python
         #
         # Protocol 0 instructions
         #
-        when MARK
-          Instructions::MARK
-        when STOP
-          Instructions::STOP
-        when POP
-          Instructions::POP
-        when POP_MARK
-          Instructions::POP_MARK
-        when DUP
-          Instructions::DUP
-        when FLOAT
-          Instructions::Float.new(read_float)
-        when INT
-          Instructions::Int.new(read_int)
-        when LONG
-          Instructions::Long.new(read_long)
-        when NONE
-          Instructions::NONE
-        when REDUCE
-          Instructions::REDUCE
-        when STRING
-          Instructions::String.new(read_string)
-        when UNICODE
-          Instructions::String.new(read_unicode_string)
-        when APPEND
-          Instructions::APPEND
-        when BUILD
-          Instructions::BUILD
-        when GLOBAL
-          Instructions::Global.new(read_nl_string,read_nl_string)
-        when DICT
-          Instructions::DICT
-        when GET
-          Instructions::Get.new(read_int)
-        when LIST
-          Instructions::LIST
-        when PUT
-          Instructions::Put.new(read_int)
-        when SETITEM
-          Instructions::SETITEM
-        when TUPLE
-          Instructions::TUPLE
+        when MARK     then Instructions::MARK
+        when STOP     then Instructions::STOP
+        when POP      then Instructions::POP
+        when POP_MARK then Instructions::POP_MARK
+        when DUP      then Instructions::DUP
+        when FLOAT    then read_float_instruction
+        when INT      then read_int_instruction
+        when LONG     then read_long_instruction
+        when NONE     then Instructions::NONE
+        when REDUCE   then Instructions::REDUCE
+        when STRING   then read_string_instruction
+        when UNICODE  then read_unicode_instruction
+        when APPEND   then Instructions::APPEND
+        when BUILD    then Instructions::BUILD
+        when GLOBAL   then read_global_instruction
+        when DICT     then Instructions::DICT
+        when GET      then read_get_instruction
+        when LIST     then Instructions::LIST
+        when PUT      then read_put_instruction
+        when SETITEM  then Instructions::SETITEM
+        when TUPLE    then Instructions::TUPLE
         #
         # Protocol 1 instructions
         #
-        when EMPTY_TUPLE
-          Instructions::EMPTY_TUPLE
-        when BINFLOAT
-          Instructions::BinFloat.new(read_float64_be)
-        when BININT1
-          Instructions::BinInt1.new(read_uint8)
-        when BINSTRING
-          length = read_uint32_le
-          string = @io.read(length)
-
-          Instructions::BinString.new(length,string)
-        when SHORT_BINSTRING
-          length = read_uint8
-          string = @io.read(length)
-
-          Instructions::ShortBinString.new(length,string)
-        when BINUNICODE
-          length = read_uint32_le
-          string = @io.read(length).force_encoding(Encoding::UTF_8)
-
-          Instructions::BinUnicode.new(length,string)
-        when EMPTY_LIST
-          Instructions::EMPTY_LIST
-        when APPENDS
-          Instructions::APPENDS
-        when BINGET
-          Instructions::BinGet.new(read_uint8)
-        when LONG_BINGET
-          Instructions::LongBinGet.new(read_uint32_le)
-        when BINPUT
-          Instructions::BinPut.new(read_uint8)
-        when SETITEMS
-          Instructions::SETITEMS
-        when EMPTY_DICT
-          Instructions::EMPTY_DICT
+        when EMPTY_TUPLE     then Instructions::EMPTY_TUPLE
+        when BINFLOAT        then read_binfloat_instruction
+        when BININT1         then read_binint1_instruction
+        when BINSTRING       then read_binstring_instruction
+        when SHORT_BINSTRING then read_short_binstring_instruction
+        when BINUNICODE      then read_binunicode_instruction
+        when EMPTY_LIST      then Instructions::EMPTY_LIST
+        when APPENDS         then Instructions::APPENDS
+        when BINGET          then read_binget_instruction
+        when LONG_BINGET     then read_long_binget_instruction
+        when BINPUT          then read_binput_instruction
+        when SETITEMS        then Instructions::SETITEMS
+        when EMPTY_DICT      then Instructions::EMPTY_DICT
         else
           raise(InvalidFormat,"invalid opcode (#{opcode.inspect}) for protocol 1")
         end
@@ -250,6 +207,103 @@ module Python
       #
       def read_uint32_le
         @io.read(4).unpack1('L<')
+      end
+
+      #
+      # Reads a `BINFLOAT` instruction.
+      #
+      # @return [Instructions::BinFloat]
+      #
+      # @since 0.2.0
+      #
+      def read_binfloat_instruction
+        Instructions::BinFloat.new(read_float64_be)
+      end
+
+      #
+      # Reads a `BININT1` instruction.
+      #
+      # @return [Instructions::BinInt1]
+      #
+      # @since 0.2.0
+      #
+      def read_binint1_instruction
+        Instructions::BinInt1.new(read_uint8)
+      end
+
+      #
+      # Reads a `BINSTRING` instruction.
+      #
+      # @return [Instructions::BinString]
+      #
+      # @since 0.2.0
+      #
+      def read_binstring_instruction
+        length = read_uint32_le
+        string = @io.read(length)
+
+        Instructions::BinString.new(length,string)
+      end
+
+      #
+      # Reads a `SHORT_BINSTRING` instruction.
+      #
+      # @return [Instructions::ShortBinString]
+      #
+      # @since 0.2.0
+      #
+      def read_short_binstring_instruction
+        length = read_uint8
+        string = @io.read(length)
+
+        Instructions::ShortBinString.new(length,string)
+      end
+
+      #
+      # Reads a `BINUNICODE` instruction.
+      #
+      # @return [Instructions::BinUnicode]
+      #
+      # @since 0.2.0
+      #
+      def read_binunicode_instruction
+        length = read_uint32_le
+        string = @io.read(length).force_encoding(Encoding::UTF_8)
+
+        Instructions::BinUnicode.new(length,string)
+      end
+
+      #
+      # Reads a `BINGET` instruction.
+      #
+      # @return [Instructions::BinGet]
+      #
+      # @since 0.2.0
+      #
+      def read_binget_instruction
+        Instructions::BinGet.new(read_uint8)
+      end
+
+      #
+      # Reads a `LONG_BINGET` instruction.
+      #
+      # @return [Instructions::LongBinGet]
+      #
+      # @since 0.2.0
+      #
+      def read_long_binget_instruction
+        Instructions::LongBinGet.new(read_uint32_le)
+      end
+
+      #
+      # Reads a `BINPUT` instruction.
+      #
+      # @return [Instructions::BinPut]
+      #
+      # @since 0.2.0
+      #
+      def read_binput_instruction
+        Instructions::BinPut.new(read_uint8)
       end
 
     end
