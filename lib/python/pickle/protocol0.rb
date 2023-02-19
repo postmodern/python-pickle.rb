@@ -13,6 +13,7 @@ require 'python/pickle/instructions/list'
 require 'python/pickle/instructions/none'
 require 'python/pickle/instructions/append'
 require 'python/pickle/instructions/global'
+require 'python/pickle/instructions/obj'
 require 'python/pickle/instructions/reduce'
 require 'python/pickle/instructions/build'
 require 'python/pickle/instructions/pop'
@@ -158,6 +159,13 @@ module Python
       # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L132
       LIST = 108
 
+      # The `OBJ` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L137
+      OBJ = 111
+
       # The `PUT` opcode.
       #
       # @since 0.2.0
@@ -211,6 +219,7 @@ module Python
         when PUT      then read_put_instruction
         when SETITEM  then Instructions::SETITEM
         when TUPLE    then Instructions::TUPLE
+        when OBJ      then Instructions::OBJ
         else
           raise(InvalidFormat,"invalid opcode (#{opcode.inspect}) for protocol 0")
         end

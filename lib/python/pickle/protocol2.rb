@@ -135,6 +135,7 @@ module Python
         when PUT      then read_put_instruction
         when SETITEM  then Instructions::SETITEM
         when TUPLE    then Instructions::TUPLE
+        when OBJ      then Instructions::OBJ
         #
         # Protocol 1 instructions
         #

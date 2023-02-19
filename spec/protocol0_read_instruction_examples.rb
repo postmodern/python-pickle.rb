@@ -178,6 +178,16 @@ shared_examples_for "Protocol0#read_instruction examples" do
     end
   end
 
+  context "when the opcode is 111" do
+    let(:io) { StringIO.new(111.chr) }
+
+    it "must return Python::Pickle::Instructions::OBJ" do
+      expect(subject.read_instruction).to be(
+        Python::Pickle::Instructions::OBJ
+      )
+    end
+  end
+
   context "when the opcode is 112" do
     let(:index) { 1 }
     let(:io)    { StringIO.new("#{112.chr}#{index}\n") }
