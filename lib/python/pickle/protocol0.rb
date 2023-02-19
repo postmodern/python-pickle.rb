@@ -30,7 +30,7 @@ require 'set'
 module Python
   module Pickle
     #
-    # Implements reading and writing of Python Pickle protocol 0.
+    # Implements Python Pickle protocol 0.
     #
     # @api private
     #

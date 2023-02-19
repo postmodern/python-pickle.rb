@@ -4,6 +4,11 @@ require 'python/pickle/instructions/short_bin_bytes'
 
 module Python
   module Pickle
+    #
+    # Implements Python Pickle protocol 3.
+    #
+    # @api private
+    #
     class Protocol3 < Protocol2
       # The `BINBYTES` opcode.
       #

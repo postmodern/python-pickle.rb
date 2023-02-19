@@ -14,6 +14,13 @@ require 'python/pickle/instructions/long4'
 
 module Python
   module Pickle
+    #
+    # Implements Pickle protocol 2.
+    #
+    # @see https://www.python.org/dev/peps/pep-0307/
+    #
+    # @api private
+    #
     class Protocol2 < Protocol1
 
       # The `PROTO` opcode.

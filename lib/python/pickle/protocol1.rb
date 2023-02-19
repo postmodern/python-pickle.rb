@@ -27,7 +27,7 @@ require 'python/pickle/instructions/empty_dict'
 module Python
   module Pickle
     #
-    # Implements reading and writing of Python Pickle protocol 1.
+    # Implements Python Pickle protocol 1.
     #
     # @api private
     #

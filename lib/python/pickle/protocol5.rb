@@ -5,6 +5,13 @@ require 'python/pickle/instructions/readonly_buffer'
 
 module Python
   module Pickle
+    #
+    # Implements Python Pickle protocol 5.
+    #
+    # @see https://www.python.org/dev/peps/pep-0574/
+    #
+    # @api private
+    #
     class Protocol5 < Protocol4
 
       # The `BYTEARRAY8` opcode.

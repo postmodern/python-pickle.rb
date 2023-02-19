@@ -15,6 +15,10 @@ module Python
     #
     # Implements Python Pickle protocol 4.
     #
+    # @see https://www.python.org/dev/peps/pep-3154/
+    #
+    # @api private
+    #
     class Protocol4 < Protocol3
 
       #
