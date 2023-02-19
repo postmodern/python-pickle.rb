@@ -189,38 +189,38 @@ module Python
 
       begin
         case opcode
-        when 0x80 # PROTO (added in protocol 2)
+        when Protocol2::PROTO
           version = io.getbyte
           io.ungetbyte(version)
           return version
-        when 48,  # POP (protocol 0)
-             50,  # DUP (protocol 0)
-             70,  # FLOAT (protocol 0)
-             83,  # STRING (protocol 0)
-             86,  # UNICODE (protocol 0)
-             100, # DICT (protocol 0)
-             103, # GET (protocol 0)
-             108, # LIST (protocol 0)
-             112  # PUT (protocol 0)
+        when Protocol0::POP,
+             Protocol0::DUP,
+             Protocol0::FLOAT,
+             Protocol0::STRING,
+             Protocol0::UNICODE,
+             Protocol0::DICT,
+             Protocol0::GET,
+             Protocol0::LIST,
+             Protocol0::PUT
           0
-        when 41,  # EMPTY_TUPLE (protocol 1)
-             71,  # BINFLOAT (protocol 1)
-             75,  # BININT1 (protocol 1)
-             84,  # BINSTRING (protocol 1)
-             85,  # SHORT_BINSTRING (protocol 1)
-             88,  # BINUNICODE (protocol 1)
-             93,  # EMPTY_LIST (protocol 1)
-             101, # APPENDS (protocol 1)
-             113, # BINPUT (protocol 1)
-             117, # SETITEMS (protocol 1)
-             125  # EMPTY_DICT (protocol 1)
+        when Protocol1::EMPTY_TUPLE,
+             Protocol1::BINFLOAT,
+             Protocol1::BININT1,
+             Protocol1::BINSTRING,
+             Protocol1::SHORT_BINSTRING,
+             Protocol1::BINUNICODE,
+             Protocol1::EMPTY_LIST,
+             Protocol1::APPENDS,
+             Protocol1::BINPUT,
+             Protocol1::SETITEMS,
+             Protocol1::EMPTY_DICT
           1
-        when 46 # STOP
+        when Protocol0::STOP
           # if we've read all the way to the end of the stream and still cannot
           # find any protocol 0 or protocol 1 specific opcodes, assume protocol 0
           0
-        when 73, # INT  (identical in both protocol 0 and 1)
-             76  # LONG (identical in both protocol 0 and 1)
+        when Protocol0::INT, # identical in both protocol 0 and 1
+             Protocol0::LONG # identical in both protocol 0 and 1
           chars = io.gets
 
           begin
@@ -228,15 +228,15 @@ module Python
           ensure
             chars.each_byte.reverse_each { |b| io.ungetbyte(b) }
           end
-        when 40,  # MARK    (identical in both protocol 0 and 1)
-             78,  # NONE    (identical in both protocol 0 and 1)
-             82,  # REDUCE  (identical in both protocol 0 and 1)
-             97,  # APPEND  (identical in both protocol 0 and 1)
-             98,  # BUILD   (identical in both protocol 0 and 1)
-             115, # SETITEM (identical in both protocol 0 and 1)
-             116  # TUPLE   (identical in both protocol 0 and 1)
+        when Protocol0::MARK,    # identical in both protocol 0 and 1
+             Protocol0::NONE,    # identical in both protocol 0 and 1
+             Protocol0::REDUCE,  # identical in both protocol 0 and 1
+             Protocol0::APPEND,  # identical in both protocol 0 and 1
+             Protocol0::BUILD,   # identical in both protocol 0 and 1
+             Protocol0::SETITEM, # identical in both protocol 0 and 1
+             Protocol0::TUPLE    # identical in both protocol 0 and 1
           infer_protocol_version(io)
-        when 99 # GLOBAL
+        when Protocol0::GLOBAL
           first_nl_string  = io.gets
           second_nl_string = io.gets
 
