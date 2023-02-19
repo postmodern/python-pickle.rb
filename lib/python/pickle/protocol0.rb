@@ -14,6 +14,7 @@ require 'python/pickle/instructions/none'
 require 'python/pickle/instructions/append'
 require 'python/pickle/instructions/global'
 require 'python/pickle/instructions/obj'
+require 'python/pickle/instructions/inst'
 require 'python/pickle/instructions/reduce'
 require 'python/pickle/instructions/build'
 require 'python/pickle/instructions/pop'
@@ -152,6 +153,13 @@ module Python
       # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L128
       GET = 103
 
+      # The `INST` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L130
+      INST = 105
+
       # The `LIST` opcode.
       #
       # @since 0.2.0
@@ -219,6 +227,7 @@ module Python
         when PUT      then read_put_instruction
         when SETITEM  then Instructions::SETITEM
         when TUPLE    then Instructions::TUPLE
+        when INST     then read_inst_instruction
         when OBJ      then Instructions::OBJ
         else
           raise(InvalidFormat,"invalid opcode (#{opcode.inspect}) for protocol 0")
@@ -566,6 +575,17 @@ module Python
       #
       def read_global_instruction
         Instructions::Global.new(read_nl_string,read_nl_string)
+      end
+
+      #
+      # Reads a `INST` instruction.
+      #
+      # @return [Instructions::Inst]
+      #
+      # @since 0.2.0
+      #
+      def read_inst_instruction
+        Instructions::Inst.new(read_nl_string,read_nl_string)
       end
 
       #

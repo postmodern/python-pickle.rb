@@ -168,6 +168,19 @@ shared_examples_for "Protocol0#read_instruction examples" do
     end
   end
 
+  context "when the opcode is 105" do
+    let(:namespace) { "foo" }
+    let(:name)      { "bar" }
+
+    let(:io) { StringIO.new("#{105.chr}#{namespace}\n#{name}\n") }
+
+    it "must return Python::Pickle::Instructions::Inst" do
+      expect(subject.read_instruction).to eq(
+        Python::Pickle::Instructions::Inst.new(namespace,name)
+      )
+    end
+  end
+
   context "when the opcode is 108" do
     let(:io) { StringIO.new(108.chr) }
 
