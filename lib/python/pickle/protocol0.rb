@@ -20,6 +20,8 @@ require 'python/pickle/instructions/build'
 require 'python/pickle/instructions/pop'
 require 'python/pickle/instructions/pop_mark'
 require 'python/pickle/instructions/dup'
+require 'python/pickle/instructions/persid'
+require 'python/pickle/instructions/bin_persid'
 require 'python/pickle/instructions/stop'
 require 'python/pickle/exceptions'
 
@@ -96,6 +98,20 @@ module Python
       #
       # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L113
       NONE = 78
+
+      # The `PERSID` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L114
+      PERSID = 80
+
+      # The `BINPERSID` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L115
+      BINPERSID = 81
 
       # The `REDUCE` opcode.
       #
@@ -206,29 +222,31 @@ module Python
       #
       def read_instruction
         case (opcode = @io.getbyte)
-        when MARK     then Instructions::MARK
-        when STOP     then Instructions::STOP
-        when POP      then Instructions::POP
-        when POP_MARK then Instructions::POP_MARK
-        when DUP      then Instructions::DUP
-        when FLOAT    then read_float_instruction
-        when INT      then read_int_instruction
-        when LONG     then read_long_instruction
-        when NONE     then Instructions::NONE
-        when REDUCE   then Instructions::REDUCE
-        when STRING   then read_string_instruction
-        when UNICODE  then read_unicode_instruction
-        when APPEND   then Instructions::APPEND
-        when BUILD    then Instructions::BUILD
-        when GLOBAL   then read_global_instruction
-        when DICT     then Instructions::DICT
-        when GET      then read_get_instruction
-        when LIST     then Instructions::LIST
-        when PUT      then read_put_instruction
-        when SETITEM  then Instructions::SETITEM
-        when TUPLE    then Instructions::TUPLE
-        when INST     then read_inst_instruction
-        when OBJ      then Instructions::OBJ
+        when MARK      then Instructions::MARK
+        when STOP      then Instructions::STOP
+        when POP       then Instructions::POP
+        when POP_MARK  then Instructions::POP_MARK
+        when DUP       then Instructions::DUP
+        when FLOAT     then read_float_instruction
+        when INT       then read_int_instruction
+        when LONG      then read_long_instruction
+        when NONE      then Instructions::NONE
+        when REDUCE    then Instructions::REDUCE
+        when STRING    then read_string_instruction
+        when UNICODE   then read_unicode_instruction
+        when APPEND    then Instructions::APPEND
+        when BUILD     then Instructions::BUILD
+        when GLOBAL    then read_global_instruction
+        when DICT      then Instructions::DICT
+        when GET       then read_get_instruction
+        when LIST      then Instructions::LIST
+        when PUT       then read_put_instruction
+        when SETITEM   then Instructions::SETITEM
+        when TUPLE     then Instructions::TUPLE
+        when INST      then read_inst_instruction
+        when OBJ       then Instructions::OBJ
+        when PERSID    then read_persid_instruction
+        when BINPERSID then Instructions::BINPERSID
         else
           raise(InvalidFormat,"invalid opcode (#{opcode.inspect}) for protocol 0")
         end
@@ -608,6 +626,17 @@ module Python
       #
       def read_put_instruction
         Instructions::Put.new(read_int)
+      end
+
+      #
+      # Reads a `PERSID` instruction.
+      #
+      # @return [Instructions::PersID]
+      #
+      # @since 0.2.0
+      #
+      def read_persid_instruction
+        Instructions::PersID.new(read_nl_string)
       end
 
     end

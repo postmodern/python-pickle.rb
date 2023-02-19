@@ -114,29 +114,31 @@ module Python
         #
         # Protocol 0 instructions
         #
-        when MARK     then Instructions::MARK
-        when STOP     then Instructions::STOP
-        when POP      then Instructions::POP
-        when POP_MARK then Instructions::POP_MARK
-        when DUP      then Instructions::DUP
-        when FLOAT    then read_float_instruction
-        when INT      then read_int_instruction
-        when LONG     then read_long_instruction
-        when NONE     then Instructions::NONE
-        when REDUCE   then Instructions::REDUCE
-        when STRING   then read_string_instruction
-        when UNICODE  then read_unicode_instruction
-        when APPEND   then Instructions::APPEND
-        when BUILD    then Instructions::BUILD
-        when GLOBAL   then read_global_instruction
-        when DICT     then Instructions::DICT
-        when GET      then read_get_instruction
-        when LIST     then Instructions::LIST
-        when PUT      then read_put_instruction
-        when SETITEM  then Instructions::SETITEM
-        when TUPLE    then Instructions::TUPLE
-        when INST     then read_inst_instruction
-        when OBJ      then Instructions::OBJ
+        when MARK      then Instructions::MARK
+        when STOP      then Instructions::STOP
+        when POP       then Instructions::POP
+        when POP_MARK  then Instructions::POP_MARK
+        when DUP       then Instructions::DUP
+        when FLOAT     then read_float_instruction
+        when INT       then read_int_instruction
+        when LONG      then read_long_instruction
+        when NONE      then Instructions::NONE
+        when REDUCE    then Instructions::REDUCE
+        when STRING    then read_string_instruction
+        when UNICODE   then read_unicode_instruction
+        when APPEND    then Instructions::APPEND
+        when BUILD     then Instructions::BUILD
+        when GLOBAL    then read_global_instruction
+        when DICT      then Instructions::DICT
+        when GET       then read_get_instruction
+        when LIST      then Instructions::LIST
+        when PUT       then read_put_instruction
+        when SETITEM   then Instructions::SETITEM
+        when TUPLE     then Instructions::TUPLE
+        when INST      then read_inst_instruction
+        when OBJ       then Instructions::OBJ
+        when PERSID    then read_persid_instruction
+        when BINPERSID then Instructions::BINPERSID
         #
         # Protocol 1 instructions
         #

@@ -93,6 +93,27 @@ shared_examples_for "Protocol0#read_instruction examples" do
     end
   end
 
+  context "when the opcode is 80" do
+    let(:id) { "12345" }
+    let(:io) { StringIO.new("#{80.chr}#{id}\n") }
+
+    it "must return a Python::Pickle::Instructions::PersID object" do
+      expect(subject.read_instruction).to eq(
+        Python::Pickle::Instructions::PersID.new(id)
+      )
+    end
+  end
+
+  context "when the opcode is 81" do
+    let(:io) { StringIO.new(81.chr) }
+
+    it "must return Python::Pickle::Instructions::BINPERSID" do
+      expect(subject.read_instruction).to be(
+        Python::Pickle::Instructions::BINPERSID
+      )
+    end
+  end
+
   context "when the opcode is 82" do
     let(:io) { StringIO.new(82.chr) }
 
