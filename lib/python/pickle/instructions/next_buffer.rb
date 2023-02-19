@@ -6,7 +6,7 @@ module Python
       #
       # Represents a pickle `NEXT_BUFFER` instruction.
       #
-      # @note introduced in protocol 4.
+      # @note introduced in protocol 5.
       #
       # @since 0.2.0
       #
