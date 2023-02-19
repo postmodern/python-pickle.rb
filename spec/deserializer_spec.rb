@@ -748,6 +748,63 @@ describe Python::Pickle::Deserializer do
       end
     end
 
+    context "when given a Python::Pickle::Instructions::Inst object" do
+      let(:namespace)   { '__main__' }
+      let(:name)        { 'MyClass'  }
+      let(:instruction) { Python::Pickle::Instructions::Inst.new(namespace,name) }
+
+      before do
+        subject.meta_stack << []
+        subject.stack << 1 << 2
+        subject.execute(instruction)
+      end
+
+      context "when the constant can be resolved" do
+        module TestInstInstruction
+          class MyClass
+            attr_reader :x, :y
+
+            def initialize(x,y)
+              @x = x
+              @y = y
+            end
+          end
+        end
+
+        subject do
+          described_class.new(
+            constants: {
+              '__main__' => {
+                'MyClass' => TestInstInstruction::MyClass
+              }
+            }
+          )
+        end
+
+        it "must resolve the class from the INST instruction's #namespace and #name, pop the meta stack, use the previous sstack as the initialization arguments, initialize a new instance of the class, and push it onto the new #stack" do
+          expect(subject.stack.length).to eq(1)
+
+          object = subject.stack[-1]
+
+          expect(object).to be_kind_of(TestInstInstruction::MyClass)
+          expect(object.x).to eq(1)
+          expect(object.y).to eq(2)
+        end
+      end
+
+      context "but the constant cannot be resolved" do
+        it "must push a new Python::Pickle::PyClass object onto the #stack" do
+          py_object = subject.stack[-1]
+
+          expect(py_object).to be_kind_of(Python::Pickle::PyObject)
+          expect(py_object.py_class).to be_kind_of(Python::Pickle::PyClass)
+          expect(py_object.py_class.namespace).to eq(namespace)
+          expect(py_object.py_class.name).to eq(name)
+          expect(py_object.init_args).to eq([1,2])
+        end
+      end
+    end
+
     context "when given a Python::Pickle::Instructions::NEWOBJ" do
       let(:instruction) { Python::Pickle::Instructions::NEWOBJ }
 

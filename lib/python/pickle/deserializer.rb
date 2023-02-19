@@ -175,6 +175,7 @@ module Python
         when Instructions::DICT            then execute_dict
         when Instructions::Global          then execute_global(instruction)
         when Instructions::STACK_GLOBAL    then execute_stack_global
+        when Instructions::Inst            then execute_inst(instruction)
         when Instructions::NEWOBJ          then execute_newobj
         when Instructions::NEWOBJ_EX       then execute_newobj_ex
         when Instructions::REDUCE          then execute_reduce
@@ -508,6 +509,21 @@ module Python
         constant = resolve_constant(namespace,name)
 
         @stack.push(constant)
+      end
+
+      #
+      # Executes an `INST` instruction.
+      #
+      # @since 0.2.0
+      #
+      def execute_inst(instruction)
+        namespace = instruction.namespace
+        name      = instruction.name
+        py_class  = resolve_constant(namespace,name)
+        args      = pop_meta_stack
+        py_object = py_class.new(*args)
+
+        @stack.push(py_object)
       end
 
       #
