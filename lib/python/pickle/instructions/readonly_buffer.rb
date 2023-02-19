@@ -8,6 +8,8 @@ module Python
       #
       # @note introduced in protocol 5.
       #
+      # @since 0.2.0
+      #
       class ReadonlyBuffer < Instruction
 
         #
@@ -20,6 +22,8 @@ module Python
       end
 
       # The `READONLY_BUFFER` instruction.
+      #
+      # @since 0.2.0
       READONLY_BUFFER = ReadonlyBuffer.new
     end
   end

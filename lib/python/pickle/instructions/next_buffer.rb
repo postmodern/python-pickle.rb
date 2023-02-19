@@ -8,6 +8,8 @@ module Python
       #
       # @note introduced in protocol 4.
       #
+      # @since 0.2.0
+      #
       class NextBuffer < Instruction
 
         #
@@ -20,6 +22,8 @@ module Python
       end
 
       # The `NEXT_BUFFER` instruction.
+      #
+      # @since 0.2.0
       NEXT_BUFFER = NextBuffer.new
     end
   end

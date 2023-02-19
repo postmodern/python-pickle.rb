@@ -22,6 +22,8 @@ module Python
       end
 
       # The `OBJ` instruction.
+      #
+      # @since 0.2.0
       OBJ = Obj.new
     end
   end

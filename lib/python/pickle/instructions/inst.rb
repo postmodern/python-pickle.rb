@@ -9,6 +9,8 @@ module Python
       #
       # @note introduced in protocol 0.
       #
+      # @since 0.2.0
+      #
       class Inst < Instruction
 
         include HasNamespaceAndName
