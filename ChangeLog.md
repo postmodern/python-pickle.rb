@@ -1,4 +1,4 @@
-### 0.2.0 / 2023-02-18
+### 0.2.0 / 2023-02-19
 
 * Added missing support for deserializing Python `set` objects.
 * Added missing support for out-of-band buffers.
