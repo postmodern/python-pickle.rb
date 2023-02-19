@@ -2,6 +2,7 @@
 
 * Added missing support for deserializing Python `set` objects.
 * Added missing support for out-of-band buffers.
+* Added missing support for deserializing the `INST` and `OBJ` instructions.
 * Added missing support for deserializing the `EMPTY_SET`, `FROZENSET`, and
   `ADDITEMS` Pickle instructions.
 * Added missing support for deserializing the `NEXT_BUFFER` and
