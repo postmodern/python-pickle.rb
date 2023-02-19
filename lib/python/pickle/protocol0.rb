@@ -32,32 +32,152 @@ module Python
     #
     class Protocol0 < Protocol
 
-      # Opcodes for Pickle protocol version 0.
+      # The `MARK` opcode.
       #
-      # @see https://github.com/python/cpython/blob/main/Lib/pickletools.py
-      OPCODES = Set[
-        40,  # MARK
-        46,  # STOP
-        48,  # POP
-        49,  # POP_MARK
-        50,  # DUP
-        70,  # FLOAT
-        73,  # INT
-        76,  # LONG
-        78,  # NONE
-        82,  # REDUCE
-        83,  # STRING
-        86,  # UNICODE
-        97,  # APPEND
-        98,  # BUILD
-        99,  # GLOBAL
-        100, # DICT
-        103, # GET
-        108, # LIST
-        112, # PUT
-        115, # SETITEM
-        116  # TUPLE
-      ]
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L102
+      MARK = 40
+
+      # The `STOP` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L103
+      STOP = 46
+
+      # The `POP` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L104
+      POP = 48
+
+      # The `POP_MARK` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L105
+      POP_MARK = 49
+
+      # The `DUP` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L106
+      DUP = 50
+
+      # The `FLOAT` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L107
+      FLOAT = 70
+
+      # The `INT` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L108
+      INT = 73
+
+      # The `LONG` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L111
+      LONG = 76
+
+      # The `NONE` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L113
+      NONE = 78
+
+      # The `REDUCE` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L116
+      REDUCE = 82
+
+      # The `STRING` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L117
+      STRING = 83
+
+      # The `UNICODE` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L120
+      UNICODE = 86
+
+      # The `APPEND` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L122
+      APPEND = 97
+
+      # The `BUILD` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L123
+      BUILD = 98
+
+      # The `GLOBAL` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L124
+      GLOBAL = 99
+
+      # The `DICT` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L125
+      DICT = 100
+
+      # The `GET` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L128
+      GET = 103
+
+      # The `LIST` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L132
+      LIST = 108
+
+      # The `PUT` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L135
+      PUT = 112
+
+      # The `SETITEM` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L138
+      SETITEM = 115
+
+      # The `TUPLE` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L139
+      TUPLE = 116
 
       #
       # Reads an instruction from the pickle stream.
@@ -70,47 +190,47 @@ module Python
       #
       def read_instruction
         case (opcode = @io.getbyte)
-        when 40 # MARK
+        when MARK
           Instructions::MARK
-        when 46 # STOP
+        when STOP
           Instructions::STOP
-        when 48 # POP
+        when POP
           Instructions::POP
-        when 49 # POP_MARK
+        when POP_MARK
           Instructions::POP_MARK
-        when 50 # DUP
+        when DUP
           Instructions::DUP
-        when 70 # FLOAT
+        when FLOAT
           Instructions::Float.new(read_float)
-        when 73 # INT
+        when INT
           Instructions::Int.new(read_int)
-        when 76 # LONG
+        when LONG
           Instructions::Long.new(read_long)
-        when 78 # NONE
+        when NONE
           Instructions::NONE
-        when 82 # REDUCE
+        when REDUCE
           Instructions::REDUCE
-        when 83 # STRING
+        when STRING
           Instructions::String.new(read_string)
-        when 86 # UNICODE
+        when UNICODE
           Instructions::String.new(read_unicode_string)
-        when 97 # APPEND
+        when APPEND
           Instructions::APPEND
-        when 98 # BUILD
+        when BUILD
           Instructions::BUILD
-        when 99 # GLOBAL
+        when GLOBAL
           Instructions::Global.new(read_nl_string,read_nl_string)
-        when 100 # DICT
+        when DICT
           Instructions::DICT
-        when 103 # GET
+        when GET
           Instructions::Get.new(read_int)
-        when 108 # LIST
+        when LIST
           Instructions::LIST
-        when 112 # PUT
+        when PUT
           Instructions::Put.new(read_int)
-        when 115 # SETITEM
+        when SETITEM
           Instructions::SETITEM
-        when 116 # TUPLE
+        when TUPLE
           Instructions::TUPLE
         else
           raise(InvalidFormat,"invalid opcode (#{opcode.inspect}) for protocol 0")

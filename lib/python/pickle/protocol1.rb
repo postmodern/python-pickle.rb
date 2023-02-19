@@ -33,22 +33,96 @@ module Python
     #
     class Protocol1 < Protocol0
 
-      # Opcodes for Pickle protocol version 1.
+      # The `EMPTY_TUPLE` opcode.
       #
-      # @see https://github.com/python/cpython/blob/main/Lib/pickletools.py
-      OPCODES = Protocol0::OPCODES + Set[
-        41,  # EMPTY_TUPLE
-        71,  # BINFLOAT
-        75,  # BININT1
-        84,  # BINSTRING
-        85,  # SHORT_BINSTRING
-        88,  # BINUNICODE
-        93,  # EMPTY_LIST
-        101, # APPENDS
-        113, # BINPUT
-        117, # SETITEMS
-        125  # EMPTY_DICT
-      ]
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L140
+      EMPTY_TUPLE = 41
+
+      # The `BINFLOAT` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L142
+      BINFLOAT = 71
+
+      # The `BININT1` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L110
+      BININT1 = 75
+
+      # The `BINSTRING` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L118
+      BINSTRING = 84
+
+      # The `SHORT_BINSTRING` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L119
+      SHORT_BINSTRING = 85
+
+      # The `BINUNICODE` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L121
+      BINUNICODE = 88
+
+      # The `EMPTY_LIST` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L133
+      EMPTY_LIST = 93
+
+      # The `APPENDS` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L127
+      APPENDS = 101
+
+      # The `BINGET` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L138
+      BINGET = 104
+
+      # The `LONG_BINGET` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L140
+      LONG_BINGET = 106
+
+      # The `BINPUT` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L145
+      BINPUT = 113
+
+      # The `SETITEMS` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L141
+      SETITEMS = 117
+
+      # The `EMPTY_DICT` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L126
+      EMPTY_DICT = 125
 
       #
       # Reads an instruction from the pickle stream.
@@ -64,85 +138,85 @@ module Python
         #
         # Protocol 0 instructions
         #
-        when 40 # MARK
+        when MARK
           Instructions::MARK
-        when 46 # STOP
+        when STOP
           Instructions::STOP
-        when 48 # POP
+        when POP
           Instructions::POP
-        when 49 # POP_MARK
+        when POP_MARK
           Instructions::POP_MARK
-        when 50 # DUP
+        when DUP
           Instructions::DUP
-        when 70 # FLOAT
+        when FLOAT
           Instructions::Float.new(read_float)
-        when 73 # INT
+        when INT
           Instructions::Int.new(read_int)
-        when 76 # LONG
+        when LONG
           Instructions::Long.new(read_long)
-        when 78 # NONE
+        when NONE
           Instructions::NONE
-        when 82 # REDUCE
+        when REDUCE
           Instructions::REDUCE
-        when 83 # STRING
+        when STRING
           Instructions::String.new(read_string)
-        when 86 # UNICODE
+        when UNICODE
           Instructions::String.new(read_unicode_string)
-        when 97 # APPEND
+        when APPEND
           Instructions::APPEND
-        when 98 # BUILD
+        when BUILD
           Instructions::BUILD
-        when 99 # GLOBAL
+        when GLOBAL
           Instructions::Global.new(read_nl_string,read_nl_string)
-        when 100 # DICT
+        when DICT
           Instructions::DICT
-        when 103 # GET
+        when GET
           Instructions::Get.new(read_int)
-        when 108 # LIST
+        when LIST
           Instructions::LIST
-        when 112 # PUT
+        when PUT
           Instructions::Put.new(read_int)
-        when 115 # SETITEM
+        when SETITEM
           Instructions::SETITEM
-        when 116 # TUPLE
+        when TUPLE
           Instructions::TUPLE
         #
         # Protocol 1 instructions
         #
-        when 41  # EMPTY_TUPLE
+        when EMPTY_TUPLE
           Instructions::EMPTY_TUPLE
-        when 71  # BINFLOAT
+        when BINFLOAT
           Instructions::BinFloat.new(read_float64_be)
-        when 75  # BININT1
+        when BININT1
           Instructions::BinInt1.new(read_uint8)
-        when 84  # BINSTRING
+        when BINSTRING
           length = read_uint32_le
           string = @io.read(length)
 
           Instructions::BinString.new(length,string)
-        when 85  # SHORT_BINSTRING
+        when SHORT_BINSTRING
           length = read_uint8
           string = @io.read(length)
 
           Instructions::ShortBinString.new(length,string)
-        when 88  # BINUNICODE
+        when BINUNICODE
           length = read_uint32_le
           string = @io.read(length).force_encoding(Encoding::UTF_8)
 
           Instructions::BinUnicode.new(length,string)
-        when 93  # EMPTY_LIST
+        when EMPTY_LIST
           Instructions::EMPTY_LIST
-        when 101 # APPENDS
+        when APPENDS
           Instructions::APPENDS
-        when 104 # BINGET
+        when BINGET
           Instructions::BinGet.new(read_uint8)
-        when 106 # LONG_BINGET
+        when LONG_BINGET
           Instructions::LongBinGet.new(read_uint32_le)
-        when 113 # BINPUT
+        when BINPUT
           Instructions::BinPut.new(read_uint8)
-        when 117 # SETITEMS
+        when SETITEMS
           Instructions::SETITEMS
-        when 125 # EMPTY_DICT
+        when EMPTY_DICT
           Instructions::EMPTY_DICT
         else
           raise(InvalidFormat,"invalid opcode (#{opcode.inspect}) for protocol 1")

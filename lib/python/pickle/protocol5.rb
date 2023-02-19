@@ -7,14 +7,26 @@ module Python
   module Pickle
     class Protocol5 < Protocol4
 
-      # Opcodes for Pickle protocol 5.
+      # The `BYTEARRAY8` opcode.
       #
-      # @see https://peps.python.org/pep-0574/
-      OPCODES = Protocol4::OPCODES + Set[
-        150, # BYTEARRAY8
-        151, # NEXT_BUFFER
-        152, # READONLY_BUFFER
-      ]
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L193
+      BYTEARRAY8 = 150
+
+      # The `NEXT_BUFFER` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L194
+      NEXT_BUFFER = 151
+
+      # The `READONLY_BUFFER` opcode.
+      #
+      # @since 0.2.0
+      #
+      # @see https://github.com/python/cpython/blob/v2.7/Lib/pickle.py#L195
+      READONLY_BUFFER = 152
 
       #
       # Reads an instruction from the pickle stream.
@@ -30,115 +42,115 @@ module Python
         #
         # Protocol 0 instructions
         #
-        when 40 # MARK
+        when MARK
           Instructions::MARK
-        when 46 # STOP
+        when STOP
           Instructions::STOP
-        when 48 # POP
+        when POP
           Instructions::POP
-        when 49 # POP_MARK
+        when POP_MARK
           Instructions::POP_MARK
-        when 50 # DUP
+        when DUP
           Instructions::DUP
-        when 70 # FLOAT
+        when FLOAT
           Instructions::Float.new(read_float)
-        when 73 # INT
+        when INT
           Instructions::Int.new(read_int)
-        when 76 # LONG
+        when LONG
           Instructions::Long.new(read_long)
-        when 78 # NONE
+        when NONE
           Instructions::NONE
-        when 82 # REDUCE
+        when REDUCE
           Instructions::REDUCE
-        when 83 # STRING
+        when STRING
           Instructions::String.new(read_string)
-        when 86 # UNICODE
+        when UNICODE
           Instructions::String.new(read_unicode_string)
-        when 97 # APPEND
+        when APPEND
           Instructions::APPEND
-        when 98 # BUILD
+        when BUILD
           Instructions::BUILD
-        when 99 # GLOBAL
+        when GLOBAL
           Instructions::Global.new(read_nl_string,read_nl_string)
-        when 100 # DICT
+        when DICT
           Instructions::DICT
-        when 103 # GET
+        when GET
           Instructions::Get.new(read_int)
-        when 108 # LIST
+        when LIST
           Instructions::LIST
-        when 112 # PUT
+        when PUT
           Instructions::Put.new(read_int)
-        when 115 # SETITEM
+        when SETITEM
           Instructions::SETITEM
-        when 116 # TUPLE
+        when TUPLE
           Instructions::TUPLE
         #
         # Protocol 1 instructions
         #
-        when 41  # EMPTY_TUPLE
+        when EMPTY_TUPLE
           Instructions::EMPTY_TUPLE
-        when 71  # BINFLOAT
+        when BINFLOAT
           Instructions::BinFloat.new(read_float64_be)
-        when 75  # BININT1
+        when BININT1
           Instructions::BinInt1.new(read_uint8)
-        when 84  # BINSTRING
+        when BINSTRING
           length = read_uint32_le
           string = @io.read(length)
 
           Instructions::BinString.new(length,string)
-        when 85  # SHORT_BINSTRING
+        when SHORT_BINSTRING
           length = read_uint8
           string = @io.read(length)
 
           Instructions::ShortBinString.new(length,string)
-        when 88  # BINUNICODE
+        when BINUNICODE
           length = read_uint32_le
           string = @io.read(length).force_encoding(Encoding::UTF_8)
 
           Instructions::BinUnicode.new(length,string)
-        when 93  # EMPTY_LIST
+        when EMPTY_LIST
           Instructions::EMPTY_LIST
-        when 101 # APPENDS
+        when APPENDS
           Instructions::APPENDS
-        when 104 # BINGET
+        when BINGET
           Instructions::BinGet.new(read_uint8)
-        when 106 # LONG_BINGET
+        when LONG_BINGET
           Instructions::LongBinGet.new(read_uint32_le)
-        when 113 # BINPUT
+        when BINPUT
           Instructions::BinPut.new(read_uint8)
-        when 117 # SETITEMS
+        when SETITEMS
           Instructions::SETITEMS
-        when 125 # EMPTY_DICT
+        when EMPTY_DICT
           Instructions::EMPTY_DICT
         #
         # Protocol 2 instructions
         #
-        when 128 # PROT
+        when PROTO
           Instructions::Proto.new(read_uint8)
-        when 129 # NEWOBJ
+        when NEWOBJ
           Instructions::NEWOBJ
-        when 130 # EXT1
+        when EXT1
           Instructions::Ext1.new(read_uint8)
-        when 131 # EXT2
+        when EXT2
           Instructions::Ext2.new(read_uint16_le)
-        when 132 # EXT4
+        when EXT4
           Instructions::Ext4.new(read_uint32_le)
-        when 133 # TUPLE1
+        when TUPLE1
           Instructions::TUPLE1
-        when 134 # TUPLE2
+        when TUPLE2
           Instructions::TUPLE2
-        when 135 # TUPLE3
+        when TUPLE3
           Instructions::TUPLE3
-        when 136 # NEWTRUE
+        when NEWTRUE
           Instructions::NEWTRUE
-        when 137 # NEWFALSE
+        when NEWFALSE
           Instructions::NEWFALSE
-        when 138 # LONG1
+        when LONG1
           length = read_uint8
           long   = read_int_le(length)
 
           Instructions::Long1.new(length,long)
-        when 139 # LONG4
+        when LONG4
           length = read_uint32_le
           long   = read_int_le(length)
 
@@ -146,12 +158,12 @@ module Python
         #
         # Protocol 3 instructions
         #
-        when 66 # BINBYTES
+        when BINBYTES
           length = read_uint32_le
           bytes  = @io.read(length)
 
           Instructions::BinBytes.new(length,bytes)
-        when 67 # SHORT_BINBYTES
+        when SHORT_BINBYTES
           length = read_uint8
           bytes  = @io.read(length)
 
@@ -159,34 +171,34 @@ module Python
         #
         # Protocol 4 instructions
         #
-        when 140 # SHORT_BINUNICODE
+        when SHORT_BINUNICODE
           length = read_uint8
           string = read_utf8_string(length)
 
           Instructions::ShortBinUnicode.new(length,string)
-        when 141 # BINUNICODE8
+        when BINUNICODE8
           length = read_uint64_le
           string = read_utf8_string(length)
 
           Instructions::BinUnicode8.new(length,string)
-        when 142 # BINBYTES8
+        when BINBYTES8
           length = read_uint64_le
           bytes  = @io.read(length)
 
           Instructions::BinBytes8.new(length,bytes)
-        when 143 # EMPTY_SET
+        when EMPTY_SET
           Instructions::EMPTY_SET
-        when 144 # ADDITEMS
+        when ADDITEMS
           Instructions::ADDITEMS
-        when 145 # FROZENSET
+        when FROZENSET
           Instructions::FROZENSET
-        when 146 # NEWOBJ_EX
+        when NEWOBJ_EX
           Instructions::NEWOBJ_EX
-        when 147 # STACK_GLOBAL
+        when STACK_GLOBAL
           Instructions::STACK_GLOBAL
-        when 148 # MEMOIZE
+        when MEMOIZE
           Instructions::MEMOIZE
-        when 149 # FRAME
+        when FRAME
           length = read_uint64_le
 
           enter_frame(read_frame(length))
@@ -195,14 +207,14 @@ module Python
         #
         # Protocol 5 instructions.
         #
-        when 150 # BYTEARRAY8
+        when BYTEARRAY8
           length = read_uint64_le
           bytes  = @io.read(length)
 
           Instructions::ByteArray8.new(length,bytes)
-        when 151 # NEXT_BUFFER
+        when NEXT_BUFFER
           Instructions::NEXT_BUFFER
-        when 152 # READONLY_BUFFER
+        when READONLY_BUFFER
           Instructions::READONLY_BUFFER
         else
           raise(InvalidFormat,"invalid opcode (#{opcode.inspect}) for protocol 5")
