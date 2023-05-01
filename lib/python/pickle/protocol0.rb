@@ -325,7 +325,7 @@ module Python
       #   The decoded raw string.
       #
       def read_string
-        new_string = String.new(encoding: Encoding::ASCII_8BIT)
+        new_string = String.new
 
         unless @io.getc == "'"
           raise(InvalidFormat,"cannot find beginning single-quote of string")
