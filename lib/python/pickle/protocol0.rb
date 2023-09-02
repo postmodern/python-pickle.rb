@@ -255,9 +255,6 @@ module Python
       #
       # Reads a hex number from the pickle stream.
       #
-      # @param [Integer] digits
-      #   The number of digits to read.
-      #
       # @return [String]
       #   The decoded raw character.
       #

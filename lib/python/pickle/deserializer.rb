@@ -195,7 +195,7 @@ module Python
       #
       # Executes a `GET`, `BINGET`, or `LONG_BINGET` instruction.
       #
-      # @param [Instructions::Get, Instructions::BinGet, Instructions::LongBinGet] instructions
+      # @param [Instructions::Get, Instructions::BinGet, Instructions::LongBinGet] instruction
       #   The `GET`, `BINGET`, or `LONG_BINGET` instruction.
       #
       def execute_get(instruction)
@@ -228,7 +228,7 @@ module Python
       #
       # Executes a `PUT`, `BINPUT`, or `LONG_BINPUT` instruction.
       #
-      # @param [Instructions::Get, Instructions::BinGet, Instructions::LongBinGet] instructions
+      # @param [Instructions::Get, Instructions::BinGet, Instructions::LongBinGet] instruction
       #   The `PUT`, `BINPUT`, or `LONG_BINPUT` instruction.
       #
       def execute_put(instruction)
@@ -455,7 +455,7 @@ module Python
       # Implements Python's `copyreg._reconstructor` function for Python Pickle
       # protocol 0 compatibility.
       #
-      # @param [PyClass, Class] class
+      # @param [PyClass, Class] klass
       #   The Python or Ruby class to be initialized.
       #
       # @param [PyClass] super_class
