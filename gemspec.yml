@@ -16,7 +16,7 @@ metadata:
   documentation_uri: https://rubydoc.info/gems/python-pickle
   source_code_uri:   https://github.com/postmodern/python-pickle.rb
   bug_tracker_uri:   https://github.com/postmodern/python-pickle.rb/issues
-  changelog_uri:     https://github.com/postmodern/python-pickle.rb/blob/master/ChangeLog.md
+  changelog_uri:     https://github.com/postmodern/python-pickle.rb/blob/main/ChangeLog.md
   rubygems_mfa_required: 'true'
 
 required_ruby_version: ">= 3.0.0"
