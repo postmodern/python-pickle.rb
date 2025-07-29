@@ -147,6 +147,6 @@ Python::Pickle.parse(File.open('dict.pkl'))
 
 ## Copyright
 
-Copyright (c) 2023-2024 Hal Brodigan
+Copyright (c) 2023-2025 Hal Brodigan
 
 See {file:LICENSE.txt} for details.
